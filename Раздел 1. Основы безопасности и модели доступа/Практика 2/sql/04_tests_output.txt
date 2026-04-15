@@ -1,0 +1,180 @@
+You are now connected to database "task_management" as user "postgres".
+SET
+====================================================
+Тест 1. GUEST — неавторизованный пользователь
+====================================================
+SET
+   кто_я   
+-----------
+ app_guest
+(1 row)
+
+-- должно работать: SELECT проектов (позже RLS ограничит до публичных)
+ project_id |       name       | status 
+------------+------------------+--------
+          1 | Website Redesign | active
+          2 | Mobile App       | active
+(2 rows)
+
+-- должно упасть: SELECT задач (guest не имеет права)
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:25: ERROR:  permission denied for table tasks
+-- должно упасть: INSERT в проекты
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:28: ERROR:  permission denied for table projects
+RESET
+====================================================
+Тест 2. EMPLOYEE (bob) — рядовой сотрудник
+====================================================
+SET
+ кто_я 
+-------
+ bob
+(1 row)
+
+-- должно работать: SELECT безопасных колонок users
+ user_id | username |   full_name   
+---------+----------+---------------
+       1 | alice    | Alice Johnson
+       2 | bob      | Bob Smith
+       3 | charlie  | Charlie Brown
+       4 | diana    | Diana Prince
+       5 | eve      | Eve Wilson
+(5 rows)
+
+-- должно упасть: чтение password_hash (колоночный GRANT не даёт)
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:43: ERROR:  permission denied for table users
+-- должно упасть: чтение email
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:46: ERROR:  permission denied for table users
+-- должно работать: SELECT задач
+ task_id |          title          |   status    
+---------+-------------------------+-------------
+       1 | Дизайн главной страницы | in_progress
+       2 | Адаптивная навигация    | todo
+       3 | Страница контактов      | todo
+(3 rows)
+
+-- должно работать: создание своей задачи
+INSERT 0 1
+-- должно упасть: DELETE запрещён сотруднику
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:56: ERROR:  permission denied for table tasks
+-- должно упасть: чтение логов доступа
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:59: ERROR:  permission denied for table access_logs
+RESET
+====================================================
+Тест 3. MANAGER (alice) — менеджер проекта
+====================================================
+SET
+ кто_я 
+-------
+ alice
+(1 row)
+
+-- работает: всё то же, что и у сотрудника (через наследование)
+ видит_задач 
+-------------
+          11
+(1 row)
+
+-- работает: создание проекта
+ project_id |           name            
+------------+---------------------------
+          3 | Тестовый проект менеджера
+(1 row)
+
+INSERT 0 1
+-- работает: удаление задачи (у manager есть DELETE)
+DELETE 1
+-- должно упасть: управление пользователями — зона админа
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:83: ERROR:  permission denied for table users
+-- должно упасть: просмотр логов
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/sql/04_tests.sql:86: ERROR:  permission denied for table access_logs
+RESET
+====================================================
+Тест 4. ADMIN (diana) — администратор
+====================================================
+SET
+ кто_я 
+-------
+ diana
+(1 row)
+
+-- работает: полный SELECT по users (включая email и хеши)
+ user_id | username |        email        |      password_hash       
+---------+----------+---------------------+--------------------------
+       1 | alice    | alice@company.com   | hash_alice_placeholder
+       2 | bob      | bob@company.com     | hash_bob_placeholder
+       3 | charlie  | charlie@company.com | hash_charlie_placeholder
+(3 rows)
+
+-- работает: добавление пользователя
+ user_id | username 
+---------+----------
+       6 | newguy
+(1 row)
+
+INSERT 0 1
+-- работает: просмотр логов доступа
+ записей_в_логах 
+-----------------
+               0
+(1 row)
+
+-- работает: DDL в своей схеме
+CREATE TABLE
+DROP TABLE
+RESET
+====================================================
+Тест 5. SUPERUSER (eve) — максимальные права
+====================================================
+SET
+ кто_я 
+-------
+ eve
+(1 row)
+
+-- работает: всё подряд
+ всего_юзеров 
+--------------
+            6
+(1 row)
+
+ всего_задач 
+-------------
+          10
+(1 row)
+
+ всего_проектов 
+----------------
+              3
+(1 row)
+
+-- работает: удаление юзера (единственная роль с DELETE на users)
+DELETE 1
+RESET
+====================================================
+Итоговая сводка: матрица прав из системного каталога
+====================================================
+    grantee    |  table_name  |                          privileges                           
+---------------+--------------+---------------------------------------------------------------
+ app_admin     | access_logs  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin     | comments     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin     | projects     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin     | task_history | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin     | tasks        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin     | users        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_employee  | comments     | INSERT, SELECT
+ app_employee  | projects     | SELECT
+ app_employee  | task_history | SELECT
+ app_employee  | tasks        | INSERT, SELECT, UPDATE
+ app_guest     | projects     | SELECT
+ app_manager   | comments     | DELETE
+ app_manager   | projects     | DELETE, INSERT, SELECT, UPDATE
+ app_manager   | task_history | INSERT
+ app_manager   | tasks        | DELETE, INSERT, SELECT, UPDATE
+ app_superuser | access_logs  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_superuser | comments     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_superuser | projects     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_superuser | task_history | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_superuser | tasks        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_superuser | users        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+(21 rows)
+

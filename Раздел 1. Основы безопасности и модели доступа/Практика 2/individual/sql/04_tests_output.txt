@@ -1,0 +1,160 @@
+You are now connected to database "library" as user "postgres".
+SET
+====================================================
+Тест 1. READER (ivan) — обычный читатель
+====================================================
+SET
+ кто_я 
+-------
+ ivan
+(1 row)
+
+-- работает: каталог книг
+ книг_в_каталоге 
+-----------------
+              10
+(1 row)
+
+-- работает: безопасные поля карточки (своей/любой — ограничит RLS)
+ reader_id | ticket_number |   full_name   
+-----------+---------------+---------------
+         1 | LIB-0001      | Иван Романов
+         2 | LIB-0002      | Наталья Белая
+         3 | LIB-0003      | Антон Волков
+(3 rows)
+
+-- упасть: email читателей (колоночный GRANT не включает email для reader)
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:22: ERROR:  permission denied for table readers
+-- упасть: INSERT книг (читатель не управляет каталогом)
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:25: ERROR:  permission denied for table books
+-- упасть: INSERT выдач
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:28: ERROR:  permission denied for table loans
+-- упасть: UPDATE штрафов
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:31: ERROR:  permission denied for table fines
+RESET
+====================================================
+Тест 2. LIBRARIAN (olga) — библиотекарь
+====================================================
+SET
+ кто_я 
+-------
+ olga
+(1 row)
+
+-- работает: видит email читателей
+ ticket_number |   full_name   |      email      
+---------------+---------------+-----------------
+ LIB-0001      | Иван Романов  | ivan@mail.ru
+ LIB-0002      | Наталья Белая | natasha@mail.ru
+ LIB-0003      | Антон Волков  | anton@mail.ru
+(3 rows)
+
+-- упасть: password_hash всё равно закрыт
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:46: ERROR:  permission denied for table readers
+-- работает: выдача книги читателю
+ loan_id | book_id | reader_id 
+---------+---------+-----------
+       8 |       4 |         1
+(1 row)
+
+INSERT 0 1
+-- работает: приём книги (возврат)
+ loan_id | returned_at 
+---------+-------------
+       2 | 2026-04-16
+(1 row)
+
+UPDATE 1
+-- упасть: INSERT в books (каталог — зона старшего)
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:58: ERROR:  permission denied for table books
+-- упасть: INSERT штрафа
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:61: ERROR:  permission denied for table fines
+RESET
+====================================================
+Тест 3. SENIOR (marina) — старший библиотекарь
+====================================================
+SET
+ кто_я  
+--------
+ marina
+(1 row)
+
+-- работает: наследование — выдача книги
+ loan_id 
+---------
+       9
+(1 row)
+
+INSERT 0 1
+-- работает: добавить книгу в каталог
+ book_id |      title       
+---------+------------------
+      11 | Тестовая новинка
+(1 row)
+
+INSERT 0 1
+-- работает: выставить штраф
+ fine_id | amount 
+---------+--------
+       3 |  50.00
+(1 row)
+
+INSERT 0 1
+-- упасть: регистрация нового читателя (зона админа)
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:89: ERROR:  permission denied for table readers
+-- упасть: логи
+psql:/sessions/epic-dazzling-lamport/mnt/БД-гитхаб/Раздел 1. Основы безопасности и модели доступа/Практика 2/individual/sql/04_tests.sql:92: ERROR:  permission denied for table access_logs
+RESET
+====================================================
+Тест 4. ADMIN (sergey) — администратор
+====================================================
+SET
+ кто_я  
+--------
+ sergey
+(1 row)
+
+-- работает: полный доступ к readers включая password_hash
+ ticket_number | username | password_hash 
+---------------+----------+---------------
+ LIB-0001      | ivan     | hash_ivan
+ LIB-0002      | natasha  | hash_natasha
+ LIB-0003      | anton    | hash_anton
+(3 rows)
+
+-- работает: регистрация нового читателя
+ reader_id | ticket_number 
+-----------+---------------
+         7 | LIB-9998
+(1 row)
+
+INSERT 0 1
+-- работает: блокировка читателя
+ reader_id | username | is_blocked 
+-----------+----------+------------
+         7 | tester   | t
+(1 row)
+
+UPDATE 1
+-- работает: логи
+INSERT 0 1
+ count 
+-------
+     1
+(1 row)
+
+-- работает: DDL
+CREATE TABLE
+DROP TABLE
+DELETE 1
+RESET
+====================================================
+Тест 5. BLOCKER (заблокированный читатель)
+====================================================
+SET
+ reader_id | ticket_number | is_blocked 
+-----------+---------------+------------
+         6 | LIB-0006      | t
+(1 row)
+
+RESET
