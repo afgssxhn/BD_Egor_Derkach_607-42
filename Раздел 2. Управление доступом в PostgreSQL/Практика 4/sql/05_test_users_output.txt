@@ -1,0 +1,38 @@
+DROP ROLE
+psql:/tmp/05.sql:3: NOTICE:  role "dev_alice" does not exist, skipping
+DROP ROLE
+DROP ROLE
+psql:/tmp/05.sql:4: NOTICE:  role "pm_bob" does not exist, skipping
+psql:/tmp/05.sql:5: NOTICE:  role "dev_charlie" does not exist, skipping
+psql:/tmp/05.sql:6: NOTICE:  role "admin_diana" does not exist, skipping
+DROP ROLE
+psql:/tmp/05.sql:7: NOTICE:  role "marketing_eve" does not exist, skipping
+DROP ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+     user      | granted_roles  
+---------------+----------------
+ admin_diana   | {app_admin}
+ dev_alice     | {app_user}
+ dev_charlie   | {app_user}
+ marketing_eve | {app_read_all}
+ pm_bob        | {app_manager}
+(5 rows)
+
+    rolname    | rolcanlogin | rolinherit | rolconnlimit 
+---------------+-------------+------------+--------------
+ admin_diana   | t           | t          |           -1
+ dev_alice     | t           | t          |           -1
+ dev_charlie   | t           | t          |           -1
+ marketing_eve | t           | t          |           -1
+ pm_bob        | t           | t          |           -1
+(5 rows)
+

@@ -1,0 +1,19 @@
+=== Тест 1: user_alice + новый пароль → успех ===
+ current_user 
+--------------
+ user_alice
+(1 row)
+
+
+=== Тест 2: user_alice + старый/неверный пароль → отказ ===
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_alice"
+
+=== Тест 3: user_md5 (хеш md5) под scram-правилом + правильный пароль → отказ ===
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_md5"
+
+=== Тест 4: user_scram (хеш scram) → успех ===
+ current_user 
+--------------
+ user_scram
+(1 row)
+

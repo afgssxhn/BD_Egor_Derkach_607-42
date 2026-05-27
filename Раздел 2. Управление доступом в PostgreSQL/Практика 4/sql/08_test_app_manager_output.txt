@@ -1,0 +1,86 @@
+=== START AS pm_bob ===
+SET
+ current_user | session_user 
+--------------+--------------
+ pm_bob       | postgres
+(1 row)
+
+=== Тест 1: SELECT app.users (успех, все поля видны) ===
+ user_id | username |        email        |   full_name   | is_active 
+---------+----------+---------------------+---------------+-----------
+       1 | alice    | alice@company.com   | Alice Johnson | t
+       2 | bob      | bob@company.com     | Bob Smith     | t
+       3 | charlie  | charlie@company.com | Charlie Brown | t
+       4 | diana    | diana@company.com   | Diana Prince  | t
+       5 | eve      | eve@company.com     | Eve Wilson    | t
+(5 rows)
+
+=== Тест 2: внутренние коменты (is_internal видим через app_internal_comments) ===
+ comment_id | task_id | user_id | is_internal |                  content                  
+------------+---------+---------+-------------+-------------------------------------------
+          1 |       1 |       1 | f           | Please make sure the design is responsive
+          2 |       1 |       2 | f           | Working on it, will share mockups soon
+          3 |       5 |       1 | f           | Requirements approved by stakeholders
+          4 |       6 |       2 | t           | Need clarification on database choice
+          5 |       9 |       1 | t           | Hold the launch until legal review
+          6 |       1 |       1 | f           | Comment from dev_alice via SET ROLE
+(6 rows)
+
+=== Тест 3: SELECT app.task_history (успех — app_history_read) ===
+ history_id | task_id | changed_by |         changed_at         | field_name  |  old_value  | new_value 
+------------+---------+------------+----------------------------+-------------+-------------+-----------
+          1 |       5 |          1 | 2026-05-27 22:33:46.070157 | status      | in_progress | done
+          2 |       1 |          1 | 2026-05-27 22:33:46.070157 | priority    | 2           | 1
+          3 |       6 |          1 | 2026-05-27 22:33:46.070157 | assignee_id | 3           | 2
+(3 rows)
+
+=== Тест 4: INSERT проекта (успех) ===
+ project_id |          name          |  status  
+------------+------------------------+----------
+          4 | Test Project by pm_bob | planning
+(1 row)
+
+INSERT 0 1
+=== Тест 5: UPDATE задачи (успех) ===
+ task_id |        title         |   status    
+---------+----------------------+-------------
+       2 | Implement navigation | in_progress
+(1 row)
+
+UPDATE 1
+=== Тест 6: DELETE задачи (успех — мы дали manager DELETE на tasks) ===
+ task_id |        title         
+---------+----------------------
+      12 | Report on Q2 metrics
+(1 row)
+
+DELETE 1
+=== Тест 7: INSERT в task_history (успех) ===
+ history_id | task_id | field_name 
+------------+---------+------------
+          4 |       2 | status
+(1 row)
+
+INSERT 0 1
+=== Тест 8: SELECT app.access_logs (ожидается отказ) ===
+psql:/tmp/08.sql:33: ERROR:  permission denied for table access_logs
+=== Доп.тест: UPDATE флага is_internal (успех через colum GRANT + общий UPDATE) ===
+ comment_id | is_internal 
+------------+-------------
+          1 | t
+(1 row)
+
+UPDATE 1
+=== Доп.тест: INSERT в app.users (ожидается отказ — manager не управляет польз) ===
+psql:/tmp/08.sql:41: ERROR:  permission denied for table users
+=== Доп.тест: CREATE TABLE app.foo (ожидается отказ — DDL только для admin) ===
+psql:/tmp/08.sql:44: ERROR:  permission denied for schema app
+LINE 1: CREATE TABLE app.foo (x INT);
+                     ^
+RESET
+=== END ===
+ current_user | session_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+

@@ -1,0 +1,85 @@
+=== 1. Все роли с атрибутами ===
+         role          | superuser | create_db | create_role | login | inherit | conn_limit | valid_until 
+-----------------------+-----------+-----------+-------------+-------+---------+------------+-------------
+ admin_diana           | f         | f         | f           | t     | t       |         -1 | 
+ app_admin             | f         | t         | f           | t     | t       |         10 | 
+ app_audit_read        | f         | f         | f           | f     | t       |         -1 | 
+ app_connect           | f         | f         | f           | f     | t       |         -1 | 
+ app_history_read      | f         | f         | f           | f     | t       |         -1 | 
+ app_internal_comments | f         | f         | f           | f     | t       |         -1 | 
+ app_manager           | f         | f         | f           | t     | t       |         50 | 
+ app_read_all          | f         | f         | f           | f     | t       |         -1 | 
+ app_read_reference    | f         | f         | f           | f     | t       |         -1 | 
+ app_task_worker       | f         | f         | f           | f     | t       |         -1 | 
+ app_user              | f         | f         | f           | t     | t       |         20 | 
+ dev_alice             | f         | f         | f           | t     | t       |         -1 | 
+ dev_charlie           | f         | f         | f           | t     | t       |         -1 | 
+ marketing_eve         | f         | f         | f           | t     | t       |         -1 | 
+ pm_bob                | f         | f         | f           | t     | t       |         -1 | 
+(15 rows)
+
+=== 2. Иерархия ролей (кто что наследует) ===
+      role       |     inherits_from     | with_admin 
+-----------------+-----------------------+------------
+ admin_diana     | app_admin             | f
+ app_admin       | app_audit_read        | f
+ app_admin       | app_manager           | f
+ app_manager     | app_history_read      | f
+ app_manager     | app_internal_comments | f
+ app_manager     | app_user              | f
+ app_read_all    | app_connect           | f
+ app_task_worker | app_read_reference    | f
+ app_user        | app_connect           | f
+ app_user        | app_read_reference    | f
+ app_user        | app_task_worker       | f
+ dev_alice       | app_user              | f
+ dev_charlie     | app_user              | f
+ marketing_eve   | app_read_all          | f
+ pm_bob          | app_manager           | f
+(15 rows)
+
+=== 3. Права на таблицы (прямые GRANT по схеме app) ===
+        role        | schema |    table     |                          privileges                           
+--------------------+--------+--------------+---------------------------------------------------------------
+ app_admin          | app    | access_logs  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | comments     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | departments  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | positions    | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | projects     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | task_history | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | tasks        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin          | app    | users        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_audit_read     | app    | access_logs  | SELECT
+ app_history_read   | app    | task_history | SELECT
+ app_manager        | app    | comments     | DELETE, INSERT, SELECT, UPDATE
+ app_manager        | app    | projects     | INSERT, SELECT, UPDATE
+ app_manager        | app    | task_history | INSERT
+ app_manager        | app    | tasks        | DELETE, INSERT, SELECT, UPDATE
+ app_read_all       | app    | comments     | SELECT
+ app_read_all       | app    | departments  | SELECT
+ app_read_all       | app    | positions    | SELECT
+ app_read_all       | app    | projects     | SELECT
+ app_read_all       | app    | task_history | SELECT
+ app_read_all       | app    | tasks        | SELECT
+ app_read_all       | app    | users        | SELECT
+ app_read_reference | app    | departments  | SELECT
+ app_read_reference | app    | positions    | SELECT
+ app_task_worker    | app    | comments     | INSERT, SELECT
+ app_task_worker    | app    | projects     | SELECT
+ app_task_worker    | app    | tasks        | SELECT
+ app_user           | app    | users        | SELECT
+(27 rows)
+
+=== 4. Активные подключения к corporate_tasks ===
+   user   |       db        | ip |        session_started        | state  
+----------+-----------------+----+-------------------------------+--------
+ postgres | corporate_tasks |    | 2026-05-27 22:44:25.121866+00 | active
+(1 row)
+
+=== Бонус: колоночные GRANT для is_internal (только app_internal_comments) ===
+        grantee        | table_name | column_name | privilege_type 
+-----------------------+------------+-------------+----------------
+ app_internal_comments | comments   | is_internal | SELECT
+ app_internal_comments | comments   | is_internal | UPDATE
+(2 rows)
+

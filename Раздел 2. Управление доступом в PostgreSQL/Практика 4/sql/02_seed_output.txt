@@ -1,0 +1,37 @@
+BEGIN
+TRUNCATE TABLE
+INSERT 0 3
+INSERT 0 5
+INSERT 0 5
+INSERT 0 3
+INSERT 0 12
+INSERT 0 5
+INSERT 0 3
+COMMIT
+      t       | count 
+--------------+-------
+ departments  |     3
+ positions    |     5
+ users        |     5
+ projects     |     3
+ tasks        |    12
+ comments     |     5
+ task_history |     3
+ access_logs  |     0
+(8 rows)
+
+ username |   full_name   |     dept      |     position      | assigned_tasks 
+----------+---------------+---------------+-------------------+----------------
+ alice    | Alice Johnson | IT Department | Manager           |              1
+ bob      | Bob Smith     | IT Department | Senior Specialist |              4
+ charlie  | Charlie Brown | IT Department | Specialist        |              3
+ diana    | Diana Prince  | Marketing     | Specialist        |              4
+ eve      | Eve Wilson    | Sales         | Junior Specialist |              0
+(5 rows)
+
+ is_internal | count 
+-------------+-------
+ f           |     3
+ t           |     2
+(2 rows)
+

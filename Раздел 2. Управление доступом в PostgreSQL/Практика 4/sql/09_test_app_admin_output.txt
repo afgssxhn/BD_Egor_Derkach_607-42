@@ -1,0 +1,120 @@
+============= БЛОК А: admin_diana =============
+SET
+ current_user | session_user 
+--------------+--------------
+ admin_diana  | postgres
+(1 row)
+
+=== Тест A1: SELECT app.access_logs (успех) ===
+ count 
+-------
+     1
+(1 row)
+
+=== Тест A2: UPDATE app.users (успех) ===
+ user_id | username | is_active 
+---------+----------+-----------
+       5 | eve      | f
+(1 row)
+
+UPDATE 1
+=== Тест A3: CREATE TABLE app.test_admin (успех) ===
+CREATE TABLE
+=== Тест A4: ALTER TABLE app.test_admin (успех) ===
+ALTER TABLE
+=== Тест A5: DROP TABLE app.test_admin (успех) ===
+DROP TABLE
+=== Тест A6: SELECT pg_roles (успех — у postgres всегда доступен) ===
+        rolname        | rolsuper | rolcreatedb | rolcanlogin 
+-----------------------+----------+-------------+-------------
+ admin_diana           | f        | f           | t
+ app_admin             | f        | t           | t
+ app_audit_read        | f        | f           | f
+ app_connect           | f        | f           | f
+ app_history_read      | f        | f           | f
+ app_internal_comments | f        | f           | f
+ app_manager           | f        | f           | t
+ app_read_all          | f        | f           | f
+ app_read_reference    | f        | f           | f
+ app_task_worker       | f        | f           | f
+ app_user              | f        | f           | t
+ dev_alice             | f        | f           | t
+ dev_charlie           | f        | f           | t
+ marketing_eve         | f        | f           | t
+ pm_bob                | f        | f           | t
+(15 rows)
+
+=== Тест A7: information_schema.role_table_grants (успех) ===
+   grantee   |  table_name  |                          privileges                           
+-------------+--------------+---------------------------------------------------------------
+ app_admin   | access_logs  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | comments     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | departments  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | positions    | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | projects     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | task_history | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | tasks        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | users        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_manager | comments     | DELETE, INSERT, SELECT, UPDATE
+ app_manager | projects     | INSERT, SELECT, UPDATE
+ app_manager | task_history | INSERT
+ app_manager | tasks        | DELETE, INSERT, SELECT, UPDATE
+ app_user    | users        | SELECT
+(13 rows)
+
+=== Доп.тест A8: INSERT в access_logs (успех — админ пишет аудит) ===
+ log_id |     action      | resource_type 
+--------+-----------------+---------------
+      2 | deactivate_user | user
+(1 row)
+
+INSERT 0 1
+=== Доп.тест A9: явная негативка — отсутствие SUPERUSER ===
+(admin НЕ должен мочь сделать SUPERUSER операцию, например ALTER SYSTEM)
+psql:/tmp/09.sql:42: ERROR:  permission denied to set parameter "work_mem"
+RESET
+============= БЛОК B: marketing_eve =============
+SET
+ current_user  | session_user 
+---------------+--------------
+ marketing_eve | postgres
+(1 row)
+
+=== Тест B1: SELECT app.projects (успех — read_all) ===
+ count 
+-------
+     4
+(1 row)
+
+=== Тест B2: SELECT app.tasks (успех) ===
+ count 
+-------
+    11
+(1 row)
+
+=== Тест B3: SELECT app.comments полностью (включая is_internal — это компромисс read_all) ===
+ comment_id | is_internal |                 content                  
+------------+-------------+------------------------------------------
+          1 | t           | Please make sure the design is responsiv
+          2 | f           | Working on it, will share mockups soon
+          3 | f           | Requirements approved by stakeholders
+          4 | t           | Need clarification on database choice
+          5 | t           | Hold the launch until legal review
+          6 | f           | Comment from dev_alice via SET ROLE
+(6 rows)
+
+=== Тест B4: SELECT app.access_logs (ожидается отказ — read_all не наследует audit) ===
+psql:/tmp/09.sql:60: ERROR:  permission denied for table access_logs
+=== Тест B5: INSERT в comments (ожидается отказ — read-only) ===
+=== Тест B6: UPDATE app.tasks (ожидается отказ) ===
+psql:/tmp/09.sql:63: ERROR:  permission denied for table comments
+psql:/tmp/09.sql:66: ERROR:  permission denied for table tasks
+=== Тест B7: DELETE app.projects (ожидается отказ) ===
+psql:/tmp/09.sql:69: ERROR:  permission denied for table projects
+RESET
+=== END ===
+ current_user | session_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+

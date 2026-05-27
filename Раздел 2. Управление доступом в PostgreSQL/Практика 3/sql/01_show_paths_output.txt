@@ -1,0 +1,44 @@
+                                                       version                                                        
+----------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 15.17 (Debian 15.17-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+(1 row)
+
+               hba_file               
+--------------------------------------
+ /var/lib/postgresql/data/pg_hba.conf
+(1 row)
+
+               config_file                
+------------------------------------------
+ /var/lib/postgresql/data/postgresql.conf
+(1 row)
+
+      data_directory      
+--------------------------
+ /var/lib/postgresql/data
+(1 row)
+
+ password_encryption 
+---------------------
+ scram-sha-256
+(1 row)
+
+        name         |                 setting                  
+---------------------+------------------------------------------
+ config_file         | /var/lib/postgresql/data/postgresql.conf
+ data_directory      | /var/lib/postgresql/data
+ hba_file            | /var/lib/postgresql/data/pg_hba.conf
+ password_encryption | scram-sha-256
+(4 rows)
+
+ line_number | type  |   database    | user_name |  address  |  auth_method  
+-------------+-------+---------------+-----------+-----------+---------------
+          89 | local | {all}         | {all}     |           | trust
+          91 | host  | {all}         | {all}     | 127.0.0.1 | trust
+          94 | host  | {all}         | {all}     | ::1       | trust
+          97 | local | {replication} | {all}     |           | trust
+          98 | host  | {replication} | {all}     | 127.0.0.1 | trust
+          99 | host  | {replication} | {all}     | ::1       | trust
+         101 | host  | {all}         | {all}     | all       | scram-sha-256
+(7 rows)
+

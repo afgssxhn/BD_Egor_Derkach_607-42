@@ -1,0 +1,60 @@
+flowchart TD
+    %% Роли-контейнеры (NOLOGIN)
+    subgraph CONTAINERS["Роли-контейнеры (NOLOGIN)"]
+        direction TB
+        C1["app_connect<br/>CONNECT, USAGE on schema app"]
+        C2["app_read_reference<br/>SELECT departments, positions"]
+        C3["app_task_worker<br/>SELECT tasks, projects<br/>SELECT,INSERT comments"]
+        C4["app_read_all<br/>SELECT * ON ALL TABLES"]
+        C5["app_internal_comments<br/>SELECT(is_internal), UPDATE(is_internal)"]
+        C6["app_history_read<br/>SELECT task_history"]
+        C7["app_audit_read<br/>SELECT access_logs"]
+    end
+
+    %% Наследование между контейнерами
+    C2 --> C3
+    C1 -.используют.-> C2
+    C1 -.используют.-> C3
+    C1 -.используют.-> C4
+
+    %% Роли пользовательские (LOGIN, INHERIT)
+    subgraph LOGINS["Роли пользователей (LOGIN, INHERIT)"]
+        direction TB
+        U1["app_user<br/>LOGIN, CONNECTION LIMIT 20"]
+        U2["app_manager<br/>LOGIN, CONNECTION LIMIT 50<br/>+ INSERT/UPDATE/DELETE на projects, tasks, comments<br/>+ INSERT task_history"]
+        U3["app_admin<br/>LOGIN, CREATEDB, CONNECTION LIMIT 10<br/>+ ALL on app.*, CREATE on schema<br/>+ управление users"]
+    end
+
+    C1 --> U1
+    C2 --> U1
+    C3 --> U1
+
+    U1 --> U2
+    C5 --> U2
+    C6 --> U2
+
+    U2 --> U3
+    C7 --> U3
+
+    %% Конкретные пользователи (LOGIN)
+    subgraph USERS["Конкретные пользователи"]
+        direction LR
+        P1["dev_alice"]
+        P2["dev_charlie"]
+        P3["pm_bob"]
+        P4["admin_diana"]
+        P5["marketing_eve"]
+    end
+
+    U1 --> P1
+    U1 --> P2
+    U2 --> P3
+    U3 --> P4
+    C4 --> P5
+
+    classDef container fill:#E8F0FE,stroke:#3367D6,color:#000;
+    classDef role fill:#FFF4E5,stroke:#F09300,color:#000;
+    classDef user fill:#E6F4EA,stroke:#34A853,color:#000;
+    class C1,C2,C3,C4,C5,C6,C7 container;
+    class U1,U2,U3 role;
+    class P1,P2,P3,P4,P5 user;

@@ -1,0 +1,26 @@
+ password_encryption 
+---------------------
+ scram-sha-256
+(1 row)
+
+DROP ROLE
+DROP ROLE
+DROP ROLE
+SET
+CREATE ROLE
+SET
+CREATE ROLE
+SET
+CREATE ROLE
+  usename   |  hash_prefix   | encryption_method | hash_length 
+------------+----------------+-------------------+-------------
+ user_alice | SCRAM-SHA-256$ | scram-sha-256     |         133
+ user_md5   | md596ff35f45d7 | md5               |          35
+ user_scram | SCRAM-SHA-256$ | scram-sha-256     |         133
+(3 rows)
+
+  usename   |                                                                passwd                                                                 
+------------+---------------------------------------------------------------------------------------------------------------------------------------
+ user_alice | SCRAM-SHA-256$4096:nyeyje6iImr28xsrOlJ+wg==$JDv/MXNYUzQYb4B+y8ww3DzU4VGzwkX7NEO9B3soCgw=:AAL/JW52e0CBcJ1JS1EMys6cJxR3nwCzPQLMBRb5YkY=
+(1 row)
+

@@ -1,0 +1,13 @@
+=== Тест 1: user_md5 с правильным паролем → успех ===
+ current_user | inet_client_addr 
+--------------+------------------
+ user_md5     | 127.0.0.1
+(1 row)
+
+
+=== Тест 2: user_md5 с НЕправильным паролем → отказ ===
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_md5"
+
+=== Тест 3: user_md5 без пароля → отказ ===
+Password for user user_md5: 
+psql: error: connection to server at "127.0.0.1", port 5432 failed: fe_sendauth: no password supplied

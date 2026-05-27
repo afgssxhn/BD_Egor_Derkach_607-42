@@ -1,0 +1,68 @@
+DROP ROLE
+psql:/tmp/04.sql:3: NOTICE:  role "app_admin" does not exist, skipping
+DROP ROLE
+psql:/tmp/04.sql:4: NOTICE:  role "app_manager" does not exist, skipping
+psql:/tmp/04.sql:5: NOTICE:  role "app_user" does not exist, skipping
+DROP ROLE
+CREATE ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT
+CREATE ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+CREATE ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+   rolname   | rolcanlogin | rolinherit | rolcreatedb | rolconnlimit 
+-------------+-------------+------------+-------------+--------------
+ app_admin   | t           | t          | t           |           10
+ app_manager | t           | t          | f           |           50
+ app_user    | t           | t          | f           |           20
+(3 rows)
+
+    role     |     inherits_from     
+-------------+-----------------------
+ app_admin   | app_audit_read
+ app_admin   | app_manager
+ app_manager | app_history_read
+ app_manager | app_internal_comments
+ app_manager | app_user
+ app_user    | app_connect
+ app_user    | app_read_reference
+ app_user    | app_task_worker
+(8 rows)
+
+   grantee   |  table_name  |                          privileges                           
+-------------+--------------+---------------------------------------------------------------
+ app_admin   | access_logs  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | comments     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | departments  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | positions    | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | projects     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | task_history | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | tasks        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_admin   | users        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_manager | comments     | DELETE, INSERT, SELECT, UPDATE
+ app_manager | projects     | INSERT, SELECT, UPDATE
+ app_manager | task_history | INSERT
+ app_manager | tasks        | DELETE, INSERT, SELECT, UPDATE
+ app_user    | users        | SELECT
+(13 rows)
+

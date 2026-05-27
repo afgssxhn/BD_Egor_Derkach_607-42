@@ -1,0 +1,53 @@
+psql:/tmp/03.sql:5: NOTICE:  role "app_audit_read" does not exist, skipping
+DROP ROLE
+DROP ROLE
+DROP ROLE
+psql:/tmp/03.sql:6: NOTICE:  role "app_history_read" does not exist, skipping
+psql:/tmp/03.sql:7: NOTICE:  role "app_internal_comments" does not exist, skipping
+DROP ROLE
+psql:/tmp/03.sql:8: NOTICE:  role "app_task_worker" does not exist, skipping
+psql:/tmp/03.sql:9: NOTICE:  role "app_read_reference" does not exist, skipping
+DROP ROLE
+DROP ROLE
+psql:/tmp/03.sql:10: NOTICE:  role "app_read_all" does not exist, skipping
+DROP ROLE
+psql:/tmp/03.sql:11: NOTICE:  role "app_connect" does not exist, skipping
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT ROLE
+GRANT
+GRANT
+GRANT
+GRANT
+CREATE ROLE
+GRANT ROLE
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+CREATE ROLE
+GRANT
+        rolname        | rolcanlogin | rolinherit 
+-----------------------+-------------+------------
+ app_audit_read        | f           | t
+ app_connect           | f           | t
+ app_history_read      | f           | t
+ app_internal_comments | f           | t
+ app_read_all          | f           | t
+ app_read_reference    | f           | t
+ app_task_worker       | f           | t
+(7 rows)
+
+      role       |   inherits_from    
+-----------------+--------------------
+ app_read_all    | app_connect
+ app_task_worker | app_read_reference
+(2 rows)
+

@@ -1,0 +1,19 @@
+ password_encryption 
+---------------------
+ scram-sha-256
+(1 row)
+
+ALTER ROLE
+ usename  |  hash_prefix   | hash_length | encryption_method 
+----------+----------------+-------------+-------------------
+ user_md5 | SCRAM-SHA-256$ |         133 | scram-sha-256
+(1 row)
+
+  usename   |   password_type    
+------------+--------------------
+ postgres   | scram-sha-256 (ок)
+ user_alice | scram-sha-256 (ок)
+ user_md5   | scram-sha-256 (ок)
+ user_scram | scram-sha-256 (ок)
+(4 rows)
+

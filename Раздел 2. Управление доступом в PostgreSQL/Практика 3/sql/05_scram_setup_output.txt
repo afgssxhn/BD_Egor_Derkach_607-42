@@ -1,0 +1,17 @@
+ALTER SYSTEM
+ pg_reload_conf 
+----------------
+ t
+(1 row)
+
+ password_encryption 
+---------------------
+ scram-sha-256
+(1 row)
+
+ALTER ROLE
+  usename   |  hash_prefix   | hash_length 
+------------+----------------+-------------
+ user_alice | SCRAM-SHA-256$ |         133
+(1 row)
+

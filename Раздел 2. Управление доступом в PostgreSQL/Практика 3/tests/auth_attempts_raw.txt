@@ -1,0 +1,17 @@
+--- Серия неудачных и успешных попыток для генерации логов ---
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_alice"
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_alice"
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_alice"
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "user_md5"
+psql: error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "non_existent_user"
+--- 2 успешных попытки ---
+              now              
+-------------------------------
+ 2026-05-27 22:14:42.303948+00
+(1 row)
+
+              now              
+-------------------------------
+ 2026-05-27 22:14:42.739095+00
+(1 row)
+

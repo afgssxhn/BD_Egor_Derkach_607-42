@@ -1,0 +1,66 @@
+CREATE SCHEMA
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+ table_schema |  table_name  
+--------------+--------------
+ app          | access_logs
+ app          | comments
+ app          | departments
+ app          | positions
+ app          | projects
+ app          | task_history
+ app          | tasks
+ app          | users
+(8 rows)
+
+ schemaname |        indexname         |  tablename   
+------------+--------------------------+--------------
+ app        | access_logs_pkey         | access_logs
+ app        | idx_access_logs_time     | access_logs
+ app        | idx_access_logs_user     | access_logs
+ app        | comments_pkey            | comments
+ app        | idx_comments_task        | comments
+ app        | idx_comments_user        | comments
+ app        | departments_name_key     | departments
+ app        | departments_pkey         | departments
+ app        | positions_pkey           | positions
+ app        | idx_projects_department  | projects
+ app        | idx_projects_owner       | projects
+ app        | idx_projects_status      | projects
+ app        | projects_pkey            | projects
+ app        | idx_task_history_changed | task_history
+ app        | idx_task_history_task    | task_history
+ app        | task_history_pkey        | task_history
+ app        | idx_tasks_assignee       | tasks
+ app        | idx_tasks_created_by     | tasks
+ app        | idx_tasks_project        | tasks
+ app        | idx_tasks_status         | tasks
+ app        | tasks_pkey               | tasks
+ app        | idx_users_department     | users
+ app        | idx_users_position       | users
+ app        | users_email_key          | users
+ app        | users_pkey               | users
+ app        | users_username_key       | users
+(26 rows)
+

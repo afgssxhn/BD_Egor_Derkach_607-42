@@ -1,0 +1,33 @@
+ALTER SYSTEM
+ALTER SYSTEM
+ALTER SYSTEM
+ pg_reload_conf 
+----------------
+ t
+(1 row)
+
+ log_connections 
+-----------------
+ off
+(1 row)
+
+ log_disconnections 
+--------------------
+ off
+(1 row)
+
+ log_line_prefix 
+-----------------
+ %m [%p] 
+(1 row)
+
+ log_destination 
+-----------------
+ stderr
+(1 row)
+
+ logging_collector 
+-------------------
+ off
+(1 row)
+

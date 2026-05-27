@@ -1,0 +1,60 @@
+=== START AS dev_alice ===
+SET
+ current_user | session_user 
+--------------+--------------
+ dev_alice    | postgres
+(1 row)
+
+=== Тест 1: SELECT app.departments (успех) ===
+ count 
+-------
+     3
+(1 row)
+
+=== Тест 2: SELECT app.positions (успех) ===
+ count 
+-------
+     5
+(1 row)
+
+=== Тест 3: SELECT app.projects (успех) ===
+ count 
+-------
+     3
+(1 row)
+
+=== Тест 4: SELECT app.tasks (успех) ===
+ count 
+-------
+    12
+(1 row)
+
+=== Тест 5: INSERT app.comments (успех) ===
+INSERT 0 1
+=== Тест 6: UPDATE app.tasks (ожидается отказ) ===
+psql:/tmp/07.sql:25: ERROR:  permission denied for table tasks
+=== Тест 7: DELETE app.tasks (ожидается отказ) ===
+psql:/tmp/07.sql:28: ERROR:  permission denied for table tasks
+=== Тест 8: SELECT app.users (успех — без password_hash в выводе) ===
+ user_id | username |        email        |   full_name   
+---------+----------+---------------------+---------------
+       1 | alice    | alice@company.com   | Alice Johnson
+       2 | bob      | bob@company.com     | Bob Smith
+       3 | charlie  | charlie@company.com | Charlie Brown
+       4 | diana    | diana@company.com   | Diana Prince
+       5 | eve      | eve@company.com     | Eve Wilson
+(5 rows)
+
+=== Тест 9: SELECT app.access_logs (ожидается отказ) ===
+psql:/tmp/07.sql:34: ERROR:  permission denied for table access_logs
+=== Доп.тест: попытка UPDATE app.users (ожидается отказ) ===
+psql:/tmp/07.sql:37: ERROR:  permission denied for table users
+=== Доп.тест: SELECT app.task_history (ожидается отказ, history только manager+) ===
+psql:/tmp/07.sql:40: ERROR:  permission denied for table task_history
+RESET
+=== END (session_user) ===
+ current_user | session_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+

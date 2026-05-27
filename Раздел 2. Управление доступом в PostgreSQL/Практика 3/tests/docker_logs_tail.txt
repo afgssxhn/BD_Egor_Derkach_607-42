@@ -1,0 +1,153 @@
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.utf8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /var/lib/postgresql/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default time zone ... Etc/UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /var/lib/postgresql/data -l logfile start
+
+initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+waiting for server to start....2026-05-06 21:18:53.686 UTC [48] LOG:  starting PostgreSQL 15.17 (Debian 15.17-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-06 21:18:53.689 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-06 21:18:53.699 UTC [51] LOG:  database system was shut down at 2026-05-06 21:18:53 UTC
+2026-05-06 21:18:53.706 UTC [48] LOG:  database system is ready to accept connections
+ done
+server started
+
+/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+
+2026-05-06 21:18:53.803 UTC [48] LOG:  received fast shutdown request
+waiting for server to shut down....2026-05-06 21:18:53.806 UTC [48] LOG:  aborting any active transactions
+2026-05-06 21:18:53.808 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+2026-05-06 21:18:53.808 UTC [49] LOG:  shutting down
+2026-05-06 21:18:53.811 UTC [49] LOG:  checkpoint starting: shutdown immediate
+2026-05-06 21:18:53.827 UTC [49] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.003 s, total=0.019 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-05-06 21:18:53.835 UTC [48] LOG:  database system is shut down
+ done
+server stopped
+
+PostgreSQL init process complete; ready for start up.
+
+2026-05-06 21:18:53.935 UTC [1] LOG:  starting PostgreSQL 15.17 (Debian 15.17-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-06 21:18:53.935 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-06 21:18:53.935 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-05-06 21:18:53.943 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-06 21:18:53.952 UTC [62] LOG:  database system was shut down at 2026-05-06 21:18:53 UTC
+2026-05-06 21:18:53.961 UTC [1] LOG:  database system is ready to accept connections
+2026-05-06 21:23:54.035 UTC [60] LOG:  checkpoint starting: time
+2026-05-06 21:23:58.071 UTC [60] LOG:  checkpoint complete: wrote 43 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.018 s, sync=0.008 s, total=4.037 s; sync files=11, longest=0.003 s, average=0.001 s; distance=252 kB, estimate=252 kB
+2026-05-06 21:41:10.032 UTC [104] ERROR:  role "user_scram" already exists
+2026-05-06 21:41:10.032 UTC [104] STATEMENT:  CREATE USER user_scram WITH PASSWORD 'SecurePass123!';
+2026-05-06 21:43:54.286 UTC [60] LOG:  checkpoint starting: time
+2026-05-06 21:43:54.709 UTC [60] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.405 s, sync=0.005 s, total=0.424 s; sync files=5, longest=0.003 s, average=0.001 s; distance=4 kB, estimate=227 kB
+2026-05-06 22:07:56.607 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-06 22:18:24.801 UTC [228] FATAL:  password authentication failed for user "user_md5"
+2026-05-06 22:18:24.801 UTC [228] DETAIL:  User "user_md5" does not have a valid SCRAM secret.
+	Connection matched pg_hba.conf line 102: "host all all all scram-sha-256"
+2026-05-06 22:18:39.177 UTC [237] FATAL:  password authentication failed for user "user_md5"
+2026-05-06 22:18:39.177 UTC [237] DETAIL:  User "user_md5" does not have a valid SCRAM secret.
+	Connection matched pg_hba.conf line 102: "host all all all scram-sha-256"
+2026-05-06 22:24:45.963 UTC [1] LOG:  received SIGHUP, reloading configuration files
+
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+2026-05-27 21:59:12.024 UTC [1] LOG:  starting PostgreSQL 15.17 (Debian 15.17-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-05-27 21:59:12.024 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-05-27 21:59:12.024 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-05-27 21:59:12.032 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-05-27 21:59:12.041 UTC [30] LOG:  database system was interrupted; last known up at 2026-05-06 21:43:54 UTC
+2026-05-27 21:59:12.483 UTC [30] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-05-27 21:59:12.489 UTC [30] LOG:  redo starts at 0/154A208
+2026-05-27 21:59:12.489 UTC [30] LOG:  invalid record length at 0/154A2F0: wanted 24, got 0
+2026-05-27 21:59:12.489 UTC [30] LOG:  redo done at 0/154A2B8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2026-05-27 21:59:12.497 UTC [28] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-05-27 21:59:12.521 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.003 s, total=0.028 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB
+2026-05-27 21:59:12.535 UTC [1] LOG:  database system is ready to accept connections
+2026-05-27 22:03:04.813 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:03:20.199 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:03:40.209 UTC [151] FATAL:  password authentication failed for user "user_md5"
+2026-05-27 22:03:40.209 UTC [151] DETAIL:  User "user_md5" does not have a valid SCRAM secret.
+	Connection matched pg_hba.conf line 93: "host    all             user_md5        127.0.0.1/32            scram-sha-256"
+2026-05-27 22:04:12.245 UTC [28] LOG:  checkpoint starting: time
+2026-05-27 22:04:12.567 UTC [28] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.306 s, sync=0.006 s, total=0.322 s; sync files=4, longest=0.004 s, average=0.002 s; distance=5 kB, estimate=5 kB
+2026-05-27 22:04:45.119 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:05:54.701 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:05:55.677 UTC [200] FATAL:  password authentication failed for user "user_md5"
+2026-05-27 22:05:55.677 UTC [200] DETAIL:  Password does not match for user "user_md5".
+	Connection matched pg_hba.conf line 92: "host    all             user_md5        127.0.0.1/32            md5"
+2026-05-27 22:07:10.408 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:07:24.768 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:07:25.655 UTC [240] FATAL:  password authentication failed for user "user_alice"
+2026-05-27 22:07:25.655 UTC [240] DETAIL:  Connection matched pg_hba.conf line 92: "host    all             user_alice      127.0.0.1/32            scram-sha-256"
+2026-05-27 22:07:26.095 UTC [248] FATAL:  password authentication failed for user "user_md5"
+2026-05-27 22:07:26.095 UTC [248] DETAIL:  User "user_md5" does not have a valid SCRAM secret.
+	Connection matched pg_hba.conf line 93: "host    all             user_md5        127.0.0.1/32            scram-sha-256    # Этап 5: тест несовместимости md5-хеша со scram-методом"
+2026-05-27 22:09:12.862 UTC [28] LOG:  checkpoint starting: time
+2026-05-27 22:09:12.986 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.104 s, sync=0.006 s, total=0.125 s; sync files=2, longest=0.004 s, average=0.003 s; distance=3 kB, estimate=5 kB
+2026-05-27 22:10:16.820 UTC [288] FATAL:  password authentication failed for user "user_md5"
+2026-05-27 22:10:16.820 UTC [288] DETAIL:  Connection matched pg_hba.conf line 93: "host    all             user_md5        127.0.0.1/32            scram-sha-256    # Этап 5: тест несовместимости md5-хеша со scram-методом"
+2026-05-27 22:11:32.062 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:11:52.027 UTC [319] LOG:  provided user name (postgres) and authenticated user name (root) do not match
+2026-05-27 22:11:52.027 UTC [319] FATAL:  Peer authentication failed for user "postgres"
+2026-05-27 22:11:52.027 UTC [319] DETAIL:  Connection matched pg_hba.conf line 10: "local   all             postgres                                peer"
+2026-05-27 22:11:54.284 UTC [359] FATAL:  password authentication failed for user "user_alice"
+2026-05-27 22:11:54.284 UTC [359] DETAIL:  Connection matched pg_hba.conf line 16: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-05-27 22:11:54.711 UTC [366] LOG:  provided user name (postgres) and authenticated user name (root) do not match
+2026-05-27 22:11:54.711 UTC [366] FATAL:  Peer authentication failed for user "postgres"
+2026-05-27 22:11:54.711 UTC [366] DETAIL:  Connection matched pg_hba.conf line 10: "local   all             postgres                                peer"
+2026-05-27 22:13:13.998 UTC [375] FATAL:  pg_hba.conf rejects connection for host "172.17.0.2", user "user_scram", database "postgres", no encryption
+2026-05-27 22:14:09.038 UTC [383] LOG:  provided user name (postgres) and authenticated user name (root) do not match
+2026-05-27 22:14:09.038 UTC [383] FATAL:  Peer authentication failed for user "postgres"
+2026-05-27 22:14:09.038 UTC [383] DETAIL:  Connection matched pg_hba.conf line 10: "local   all             postgres                                peer"
+2026-05-27 22:14:12.154 UTC [28] LOG:  checkpoint starting: time
+2026-05-27 22:14:12.276 UTC [28] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.103 s, sync=0.005 s, total=0.122 s; sync files=2, longest=0.003 s, average=0.003 s; distance=4 kB, estimate=5 kB
+2026-05-27 22:14:15.999 UTC [1] LOG:  received SIGHUP, reloading configuration files
+2026-05-27 22:14:16.000 UTC [1] LOG:  parameter "log_connections" changed to "on"
+2026-05-27 22:14:16.000 UTC [1] LOG:  parameter "log_disconnections" changed to "on"
+2026-05-27 22:14:15 UTC [1]: [16-1] user=,db=,app=,client= LOG:  parameter "log_line_prefix" changed to "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h "
+2026-05-27 22:14:26 UTC [397]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=[local] LOG:  connection received: host=[local]
+2026-05-27 22:14:26 UTC [397]: [2-1] user=postgres,db=postgres,app=[unknown],client=[local] LOG:  connection authenticated: identity="postgres" method=peer (/var/lib/postgresql/data/pg_hba.conf:10)
+2026-05-27 22:14:26 UTC [397]: [3-1] user=postgres,db=postgres,app=[unknown],client=[local] LOG:  connection authorized: user=postgres database=postgres application_name=psql
+2026-05-27 22:14:26 UTC [397]: [4-1] user=postgres,db=postgres,app=psql,client=[local] LOG:  disconnection: session time: 0:00:00.003 user=postgres database=postgres host=[local]
+2026-05-27 22:14:40 UTC [411]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36580
+2026-05-27 22:14:40 UTC [411]: [2-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 FATAL:  password authentication failed for user "user_alice"
+2026-05-27 22:14:40 UTC [411]: [3-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 DETAIL:  Connection matched pg_hba.conf line 16: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-05-27 22:14:40 UTC [419]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36584
+2026-05-27 22:14:40 UTC [419]: [2-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 FATAL:  password authentication failed for user "user_alice"
+2026-05-27 22:14:40 UTC [419]: [3-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 DETAIL:  Connection matched pg_hba.conf line 16: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-05-27 22:14:40 UTC [427]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36588
+2026-05-27 22:14:40 UTC [427]: [2-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 FATAL:  password authentication failed for user "user_alice"
+2026-05-27 22:14:40 UTC [427]: [3-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 DETAIL:  Connection matched pg_hba.conf line 16: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-05-27 22:14:41 UTC [435]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36592
+2026-05-27 22:14:41 UTC [435]: [2-1] user=user_md5,db=postgres,app=[unknown],client=127.0.0.1 FATAL:  password authentication failed for user "user_md5"
+2026-05-27 22:14:41 UTC [435]: [3-1] user=user_md5,db=postgres,app=[unknown],client=127.0.0.1 DETAIL:  Connection matched pg_hba.conf line 16: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-05-27 22:14:41 UTC [443]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36600
+2026-05-27 22:14:41 UTC [443]: [2-1] user=non_existent_user,db=postgres,app=[unknown],client=127.0.0.1 FATAL:  password authentication failed for user "non_existent_user"
+2026-05-27 22:14:41 UTC [443]: [3-1] user=non_existent_user,db=postgres,app=[unknown],client=127.0.0.1 DETAIL:  Role "non_existent_user" does not exist.
+	Connection matched pg_hba.conf line 16: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-05-27 22:14:42 UTC [451]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36612
+2026-05-27 22:14:42 UTC [451]: [2-1] user=user_scram,db=postgres,app=[unknown],client=127.0.0.1 LOG:  connection authenticated: identity="user_scram" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:16)
+2026-05-27 22:14:42 UTC [451]: [3-1] user=user_scram,db=postgres,app=[unknown],client=127.0.0.1 LOG:  connection authorized: user=user_scram database=postgres application_name=psql
+2026-05-27 22:14:42 UTC [451]: [4-1] user=user_scram,db=postgres,app=psql,client=127.0.0.1 LOG:  disconnection: session time: 0:00:00.010 user=user_scram database=postgres host=127.0.0.1 port=36612
+2026-05-27 22:14:42 UTC [459]: [1-1] user=[unknown],db=[unknown],app=[unknown],client=127.0.0.1 LOG:  connection received: host=127.0.0.1 port=36616
+2026-05-27 22:14:42 UTC [459]: [2-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 LOG:  connection authenticated: identity="user_alice" method=scram-sha-256 (/var/lib/postgresql/data/pg_hba.conf:16)
+2026-05-27 22:14:42 UTC [459]: [3-1] user=user_alice,db=postgres,app=[unknown],client=127.0.0.1 LOG:  connection authorized: user=user_alice database=postgres application_name=psql
+2026-05-27 22:14:42 UTC [459]: [4-1] user=user_alice,db=postgres,app=psql,client=127.0.0.1 LOG:  disconnection: session time: 0:00:00.009 user=user_alice database=postgres host=127.0.0.1 port=36616

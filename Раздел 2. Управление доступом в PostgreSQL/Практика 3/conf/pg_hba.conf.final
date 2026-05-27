@@ -1,0 +1,27 @@
+# ============================================
+# Итоговая безопасная конфигурация pg_hba.conf
+# Практика 3, Этап 8. PostgreSQL 15 / Docker
+# ============================================
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# --- Локальный доступ (Unix socket внутри контейнера) ---
+
+# Суперпольз postgres только через peer (POSIX-юзер postgres)
+local   all             postgres                                peer
+
+# Прочие локальные подключения — по паролю SCRAM
+local   all             all                                     scram-sha-256
+
+# --- Loopback (хост через docker port mapping приходит сюда) ---
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all             ::1/128                 scram-sha-256
+
+# --- Репликация (на dev оставляем loopback по паролю) ---
+local   replication     all                                     scram-sha-256
+host    replication     all             127.0.0.1/32            scram-sha-256
+host    replication     all             ::1/128                 scram-sha-256
+
+# --- Блокировка всех остальных подключений ---
+# Любой адрес кроме перечисленных выше — отказ.
+host    all             all             0.0.0.0/0               reject
+host    all             all             ::/0                    reject
