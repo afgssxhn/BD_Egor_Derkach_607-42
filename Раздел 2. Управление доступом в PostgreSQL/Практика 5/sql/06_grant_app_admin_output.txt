@@ -1,0 +1,36 @@
+GRANT ROLE
+GRANT ROLE
+GRANT
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+=== Прямые членства app_admin ===
+     rolname     
+-----------------
+ app_full_access
+ app_manager
+(2 rows)
+
+=== Иерархия LOGIN-ролей и пользователей ===
+     role      |    inherits_from     
+---------------+----------------------
+ admin_diana   | app_admin
+ app_admin     | app_full_access
+ app_admin     | app_manager
+ app_manager   | app_project_write
+ app_manager   | app_user
+ app_user      | app_access_log_write
+ app_user      | app_comments_full
+ app_user      | app_connect
+ app_user      | app_history_full
+ app_user      | app_read_main
+ app_user      | app_read_reference
+ app_user      | app_task_write
+ dev_alice     | app_user
+ dev_charlie   | app_user
+ marketing_eve | app_connect
+ marketing_eve | app_read_main
+ marketing_eve | app_read_reference
+ pm_bob        | app_manager
+(18 rows)
+

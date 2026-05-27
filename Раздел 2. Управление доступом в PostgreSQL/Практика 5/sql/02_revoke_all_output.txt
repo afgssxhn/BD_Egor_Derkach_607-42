@@ -1,0 +1,48 @@
+=== Снятие членства в контейнерах (Практика 4) ===
+psql:/tmp/02.sql:7: WARNING:  role "app_user" is not a member of role "app_connect"
+REVOKE ROLE
+psql:/tmp/02.sql:8: WARNING:  role "app_user" is not a member of role "app_read_reference"
+REVOKE ROLE
+REVOKE ROLE
+psql:/tmp/02.sql:9: WARNING:  role "app_user" is not a member of role "app_task_worker"
+psql:/tmp/02.sql:11: WARNING:  role "app_manager" is not a member of role "app_user"
+REVOKE ROLE
+psql:/tmp/02.sql:12: WARNING:  role "app_manager" is not a member of role "app_internal_comments"
+REVOKE ROLE
+REVOKE ROLE
+psql:/tmp/02.sql:13: WARNING:  role "app_manager" is not a member of role "app_history_read"
+psql:/tmp/02.sql:15: WARNING:  role "app_admin" is not a member of role "app_manager"
+REVOKE ROLE
+REVOKE ROLE
+psql:/tmp/02.sql:16: WARNING:  role "app_admin" is not a member of role "app_audit_read"
+psql:/tmp/02.sql:18: WARNING:  role "marketing_eve" is not a member of role "app_read_all"
+REVOKE ROLE
+=== REVOKE ALL прямых прав на таблицы/последовательности ===
+REVOKE
+REVOKE
+REVOKE
+=== Проверка: для app_user/manager/admin должно быть пусто ===
+ grantee | table_name | privilege_type 
+---------+------------+----------------
+(0 rows)
+
+=== Проверка членства ===
+ member | in_role 
+--------+---------
+(0 rows)
+
+=== DROP OWNED BY + DROP контейнеров Практики 4 ===
+DROP OWNED
+DROP ROLE
+DROP OWNED
+DROP ROLE
+DROP OWNED
+DROP ROLE
+DROP OWNED
+DROP ROLE
+DROP OWNED
+DROP ROLE
+DROP OWNED
+DROP ROLE
+DROP OWNED
+DROP ROLE

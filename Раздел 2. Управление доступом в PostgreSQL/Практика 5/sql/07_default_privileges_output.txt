@@ -1,0 +1,14 @@
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+=== Просмотр настроек DEFAULT PRIVILEGES ===
+ creator_role | schema | obj_type |                                               acl                                                
+--------------+--------+----------+--------------------------------------------------------------------------------------------------
+ app_admin    | app    | r        | {app_read_reference=r/app_admin,app_task_write=arwd/app_admin,app_full_access=arwdDxt/app_admin}
+ app_admin    | app    | S        | {app_task_write=U/app_admin,app_full_access=rwU/app_admin}
+(2 rows)
+

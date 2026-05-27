@@ -1,0 +1,59 @@
+flowchart TD
+    subgraph CONT["9 ролей-контейнеров (NOLOGIN)"]
+        direction TB
+        C1["app_connect<br/>CONNECT + USAGE schema app"]
+        C2["app_read_reference<br/>SELECT departments, positions"]
+        C3["app_read_main<br/>SELECT users (3 колонки после бонуса), projects, tasks"]
+        C4["app_comments_full<br/>S/I/U/D comments + USAGE seq"]
+        C5["app_task_write<br/>S/I/U tasks, S projects + USAGE seq"]
+        C6["app_project_write<br/>S/I/U projects (без DELETE) + USAGE seq"]
+        C7["app_history_full<br/>S/I task_history + USAGE seq"]
+        C8["app_access_log_write<br/>INSERT access_logs + USAGE seq"]
+        C9["app_full_access<br/>ALL ON TABLES+SEQUENCES + CREATE on schema"]
+    end
+
+    subgraph LOG["LOGIN-роли"]
+        direction TB
+        U1["app_user"]
+        U2["app_manager<br/>+ колоночный SELECT/UPDATE (is_internal)<br/>+ прямой SELECT app.users (для бонуса)"]
+        U3["app_admin<br/>+ CREATE on schema app"]
+    end
+
+    subgraph USERS["Пользователи"]
+        direction LR
+        P1["dev_alice"]
+        P2["dev_charlie"]
+        P3["pm_bob"]
+        P4["admin_diana"]
+        P5["marketing_eve<br/>read-only через прямые контейнеры"]
+    end
+
+    C1 --> U1
+    C2 --> U1
+    C3 --> U1
+    C4 --> U1
+    C5 --> U1
+    C7 --> U1
+    C8 --> U1
+
+    U1 --> U2
+    C6 --> U2
+
+    U2 --> U3
+    C9 --> U3
+
+    U1 --> P1
+    U1 --> P2
+    U2 --> P3
+    U3 --> P4
+
+    C1 --> P5
+    C2 --> P5
+    C3 --> P5
+
+    classDef cont fill:#E8F0FE,stroke:#3367D6,color:#000;
+    classDef role fill:#FFF4E5,stroke:#F09300,color:#000;
+    classDef user fill:#E6F4EA,stroke:#34A853,color:#000;
+    class C1,C2,C3,C4,C5,C6,C7,C8,C9 cont;
+    class U1,U2,U3 role;
+    class P1,P2,P3,P4,P5 user;

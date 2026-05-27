@@ -1,0 +1,38 @@
+SET
+CREATE TABLE
+RESET
+=== Права на новую таблицу (должны быть автоматически выданы) ===
+      grantee       |                             privs                             
+--------------------+---------------------------------------------------------------
+ app_admin          | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_full_access    | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ app_read_reference | SELECT
+ app_task_write     | DELETE, INSERT, SELECT, UPDATE
+(4 rows)
+
+=== Права на новую последовательность ===
+     grantee     | privilege_type 
+-----------------+----------------
+ app_admin       | USAGE
+ app_full_access | USAGE
+ app_task_write  | USAGE
+(3 rows)
+
+=== Тест: dev_alice читает новую таблицу (унаследовал через app_task_write/app_read_reference) ===
+SET
+ count 
+-------
+     0
+(1 row)
+
+INSERT 0 1
+ id |   name   
+----+----------
+  1 | test row
+(1 row)
+
+RESET
+=== Чистка: удалить тестовую таблицу ===
+SET
+DROP TABLE
+RESET

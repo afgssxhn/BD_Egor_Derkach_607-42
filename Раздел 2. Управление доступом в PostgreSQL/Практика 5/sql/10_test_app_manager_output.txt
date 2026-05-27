@@ -1,0 +1,63 @@
+SET
+ current_user | session_user 
+--------------+--------------
+ pm_bob       | postgres
+(1 row)
+
+=== Тест 1: наследование app_user → SELECT departments (успех) ===
+ count 
+-------
+     3
+(1 row)
+
+=== Тест 2: INSERT проекта (успех, app_project_write) ===
+ project_id |          name           
+------------+-------------------------
+          5 | Manager Test Project P5
+(1 row)
+
+INSERT 0 1
+=== Тест 3: UPDATE проекта (успех) ===
+ project_id |     description     
+------------+---------------------
+          5 | Updated description
+(1 row)
+
+UPDATE 1
+=== Тест 4: DELETE проекта (ожидается ОТКАЗ — app_project_write не содержит DELETE!) ===
+psql:/tmp/10_test_app_manager.sql:20: ERROR:  permission denied for table projects
+=== Тест 5: SELECT comments с is_internal (успех, колоночный grant) ===
+ comment_id | is_internal 
+------------+-------------
+          1 | t
+          2 | f
+          3 | f
+          4 | t
+          5 | t
+(5 rows)
+
+=== Тест 6: SELECT app.task_history (успех, унаследовано) ===
+ count 
+-------
+     4
+(1 row)
+
+=== Тест 7: SELECT app.access_logs (ожидается отказ — у app_user/manager только INSERT) ===
+psql:/tmp/10_test_app_manager.sql:29: ERROR:  permission denied for table access_logs
+=== Доп: UPDATE is_internal на коменте (успех, колоночный) ===
+ comment_id | is_internal 
+------------+-------------
+          2 | t
+(1 row)
+
+UPDATE 1
+=== Доп: CREATE TABLE (ожидается отказ — нет CREATE на схему) ===
+psql:/tmp/10_test_app_manager.sql:35: ERROR:  permission denied for schema app
+LINE 1: CREATE TABLE app.foo_mgr (x INT);
+                     ^
+RESET
+ current_user | session_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+

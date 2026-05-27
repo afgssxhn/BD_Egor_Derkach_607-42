@@ -1,0 +1,76 @@
+SET
+ current_user | session_user 
+--------------+--------------
+ dev_alice    | postgres
+(1 row)
+
+=== Тест 1: SELECT app.departments (успех) ===
+ count 
+-------
+     3
+(1 row)
+
+=== Тест 2: SELECT app.positions (успех) ===
+ count 
+-------
+     5
+(1 row)
+
+=== Тест 3: SELECT app.users (успех, app_read_main) ===
+ user_id | username |        email        |   full_name   
+---------+----------+---------------------+---------------
+       1 | alice    | alice@company.com   | Alice Johnson
+       2 | bob      | bob@company.com     | Bob Smith
+       3 | charlie  | charlie@company.com | Charlie Brown
+       4 | diana    | diana@company.com   | Diana Prince
+       5 | eve      | eve@company.com     | Eve Wilson
+(5 rows)
+
+=== Тест 4: SELECT app.projects (успех) ===
+ count 
+-------
+     5
+(1 row)
+
+=== Тест 5: SELECT app.tasks (успех) ===
+ count 
+-------
+    11
+(1 row)
+
+=== Тест 6: INSERT в app.comments (успех, app_comments_full) ===
+ comment_id 
+------------
+         10
+(1 row)
+
+INSERT 0 1
+=== Тест 7: UPDATE статуса задачи (успех, app_task_write) ===
+ task_id |   status    
+---------+-------------
+       2 | in_progress
+(1 row)
+
+UPDATE 1
+=== Тест 8: DELETE задачи (ожидается отказ — у app_task_write нет DELETE) ===
+psql:/tmp/09_test_app_user.sql:29: ERROR:  permission denied for table tasks
+=== Тест 9: INSERT проекта (ожидается отказ — нет app_project_write) ===
+=== Тест 10: SELECT app.task_history (успех, app_history_full) ===
+psql:/tmp/09_test_app_user.sql:32: ERROR:  permission denied for table projects
+ count 
+-------
+     4
+(1 row)
+
+=== Тест 11: SELECT app.access_logs (ожидается отказ — у app_user только INSERT) ===
+psql:/tmp/09_test_app_user.sql:38: ERROR:  permission denied for table access_logs
+=== Тест 12: INSERT в access_logs (успех, app_access_log_write) ===
+INSERT 0 1
+=== Тест 13: INSERT в access_logs с RETURNING (отказ — нужен SELECT для возврата колонки) ===
+psql:/tmp/09_test_app_user.sql:47: ERROR:  permission denied for table access_logs
+RESET
+ current_user | session_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+

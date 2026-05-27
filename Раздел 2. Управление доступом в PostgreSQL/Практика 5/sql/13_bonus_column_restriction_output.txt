@@ -1,0 +1,69 @@
+=== ШАГ 1: REVOKE SELECT на всю app.users у app_read_main, оставить колоночные ===
+REVOKE
+GRANT
+=== ШАГ 2: проверить что у app_read_main теперь только три колонки ===
+ column_name | privilege_type 
+-------------+----------------
+ full_name   | SELECT
+ user_id     | SELECT
+ username    | SELECT
+(3 rows)
+
+=== ШАГ 3: app_manager должен видеть ВСЁ в users — дадим прямой полный SELECT ===
+GRANT
+=== Тест A: dev_alice (app_user) видит только разрешённые колонки ===
+SET
+ user_id | username |   full_name   
+---------+----------+---------------
+       1 | alice    | Alice Johnson
+       2 | bob      | Bob Smith
+       3 | charlie  | Charlie Brown
+       4 | diana    | Diana Prince
+       5 | eve      | Eve Wilson
+(5 rows)
+
+=== Тест B: dev_alice пытается прочитать email (ожидается отказ) ===
+psql:/tmp/13.sql:25: ERROR:  permission denied for table users
+=== Тест C: dev_alice пытается прочитать password_hash (ожидается отказ) ===
+psql:/tmp/13.sql:28: ERROR:  permission denied for table users
+=== Тест D: dev_alice пытается SELECT * (ожидается отказ, звёздочка раскрывается) ===
+psql:/tmp/13.sql:31: ERROR:  permission denied for table users
+RESET
+=== Тест E: pm_bob (app_manager + прямой полный SELECT) видит email и password_hash ===
+SET
+ user_id | username |        email        |   hash_prefix    
+---------+----------+---------------------+------------------
+       1 | alice    | alice@company.com   | md5_hash_alice
+       2 | bob      | bob@company.com     | md5_hash_bob
+       3 | charlie  | charlie@company.com | md5_hash_charlie
+(3 rows)
+
+RESET
+=== Тест F: admin_diana (app_full_access) видит всё ===
+SET
+ user_id | username |       email       | password_hash  |   full_name   | department_id | position_id | is_active |         created_at         |         updated_at         
+---------+----------+-------------------+----------------+---------------+---------------+-------------+-----------+----------------------------+----------------------------
+       1 | alice    | alice@company.com | md5_hash_alice | Alice Johnson |             1 |           5 | t         | 2026-05-27 22:33:46.070157 | 2026-05-27 22:33:46.070157
+(1 row)
+
+RESET
+=== Тест G: marketing_eve (app_read_main без manager-overlay) — тоже ограничена ===
+SET
+ user_id | username |   full_name   
+---------+----------+---------------
+       1 | alice    | Alice Johnson
+       2 | bob      | Bob Smith
+       3 | charlie  | Charlie Brown
+(3 rows)
+
+"--- попытка SELECT email ---"
+psql:/tmp/13.sql:48: ERROR:  permission denied for table users
+RESET
+=== Проверка через has_column_privilege ===
+SET
+ username_ok | email_ok | hash_ok 
+-------------+----------+---------
+ t           | f        | f
+(1 row)
+
+RESET

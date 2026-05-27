@@ -1,0 +1,32 @@
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+GRANT ROLE
+=== Прямые членства app_user ===
+       inherits       
+----------------------
+ app_access_log_write
+ app_comments_full
+ app_connect
+ app_history_full
+ app_read_main
+ app_read_reference
+ app_task_write
+(7 rows)
+
+=== Эффективные права app_user на таблицы (через контейнеры) ===
+  table_name  |             privs              
+--------------+--------------------------------
+ access_logs  | INSERT
+ comments     | DELETE, INSERT, SELECT, UPDATE
+ departments  | SELECT
+ positions    | SELECT
+ projects     | SELECT
+ task_history | INSERT, SELECT
+ tasks        | INSERT, SELECT, UPDATE
+ users        | SELECT
+(8 rows)
+

@@ -1,0 +1,59 @@
+SET
+ current_user | session_user 
+--------------+--------------
+ admin_diana  | postgres
+(1 row)
+
+=== Тест 1: SELECT access_logs (успех, app_full_access) ===
+ count 
+-------
+     2
+(1 row)
+
+=== Тест 2: DELETE задачи (успех) ===
+ task_id 
+---------
+      13
+(1 row)
+
+INSERT 0 1
+ task_id 
+---------
+      13
+(1 row)
+
+DELETE 1
+=== Тест 3: CREATE TABLE app.admin_test (успех, CREATE on schema) ===
+CREATE TABLE
+=== Тест 4: DROP TABLE app.admin_test (успех) ===
+DROP TABLE
+=== Тест 5: запрос ко всем правам ролей (успех, чтение системных view доступно всем) ===
+ grantee | table_name | priv_count 
+---------+------------+------------
+(0 rows)
+
+=== Тест 6: GRANT на чужую роль (успех — admin владеет правом передавать?) ===
+psql:/tmp/11_test_app_admin.sql:35: WARNING:  no privileges were granted for "access_logs"
+GRANT
+=== Тест 7: REVOKE того же права обратно ===
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "tableoid" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "cmax" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "xmax" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "cmin" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "xmin" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "ctid" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "log_id" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "user_id" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "action" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "resource_type" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "resource_id" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "ip_address" of relation "access_logs"
+psql:/tmp/11_test_app_admin.sql:38: WARNING:  no privileges could be revoked for column "logged_at" of relation "access_logs"
+REVOKE
+RESET
+ current_user | session_user 
+--------------+--------------
+ postgres     | postgres
+(1 row)
+

@@ -1,0 +1,138 @@
+=== 1. Все роли проекта с атрибутами ===
+        rolname        | rolsuper | rolcreatedb | rolcanlogin | rolinherit | rolconnlimit 
+-----------------------+----------+-------------+-------------+------------+--------------
+ admin_diana           | f        | f           | t           | t          |           -1
+ app_admin             | f        | t           | t           | t          |           10
+ app_audit_read        | f        | f           | f           | t          |           -1
+ app_connect           | f        | f           | f           | t          |           -1
+ app_history_read      | f        | f           | f           | t          |           -1
+ app_internal_comments | f        | f           | f           | t          |           -1
+ app_manager           | f        | f           | t           | t          |           50
+ app_read_all          | f        | f           | f           | t          |           -1
+ app_read_reference    | f        | f           | f           | t          |           -1
+ app_task_worker       | f        | f           | f           | t          |           -1
+ app_user              | f        | f           | t           | t          |           20
+ dev_alice             | f        | f           | t           | t          |           -1
+ dev_charlie           | f        | f           | t           | t          |           -1
+ marketing_eve         | f        | f           | t           | t          |           -1
+ pm_bob                | f        | f           | t           | t          |           -1
+(15 rows)
+
+=== 2. Прямые GRANT на таблицы для пользовательских ролей ===
+   grantee   | table_schema |  table_name  | privilege_type | is_grantable 
+-------------+--------------+--------------+----------------+--------------
+ app_admin   | app          | access_logs  | DELETE         | NO
+ app_admin   | app          | access_logs  | INSERT         | NO
+ app_admin   | app          | access_logs  | REFERENCES     | NO
+ app_admin   | app          | access_logs  | SELECT         | NO
+ app_admin   | app          | access_logs  | TRIGGER        | NO
+ app_admin   | app          | access_logs  | TRUNCATE       | NO
+ app_admin   | app          | access_logs  | UPDATE         | NO
+ app_admin   | app          | comments     | DELETE         | NO
+ app_admin   | app          | comments     | INSERT         | NO
+ app_admin   | app          | comments     | REFERENCES     | NO
+ app_admin   | app          | comments     | SELECT         | NO
+ app_admin   | app          | comments     | TRIGGER        | NO
+ app_admin   | app          | comments     | TRUNCATE       | NO
+ app_admin   | app          | comments     | UPDATE         | NO
+ app_admin   | app          | departments  | DELETE         | NO
+ app_admin   | app          | departments  | INSERT         | NO
+ app_admin   | app          | departments  | REFERENCES     | NO
+ app_admin   | app          | departments  | SELECT         | NO
+ app_admin   | app          | departments  | TRIGGER        | NO
+ app_admin   | app          | departments  | TRUNCATE       | NO
+ app_admin   | app          | departments  | UPDATE         | NO
+ app_admin   | app          | positions    | DELETE         | NO
+ app_admin   | app          | positions    | INSERT         | NO
+ app_admin   | app          | positions    | REFERENCES     | NO
+ app_admin   | app          | positions    | SELECT         | NO
+ app_admin   | app          | positions    | TRIGGER        | NO
+ app_admin   | app          | positions    | TRUNCATE       | NO
+ app_admin   | app          | positions    | UPDATE         | NO
+ app_admin   | app          | projects     | DELETE         | NO
+ app_admin   | app          | projects     | INSERT         | NO
+ app_admin   | app          | projects     | REFERENCES     | NO
+ app_admin   | app          | projects     | SELECT         | NO
+ app_admin   | app          | projects     | TRIGGER        | NO
+ app_admin   | app          | projects     | TRUNCATE       | NO
+ app_admin   | app          | projects     | UPDATE         | NO
+ app_admin   | app          | task_history | DELETE         | NO
+ app_admin   | app          | task_history | INSERT         | NO
+ app_admin   | app          | task_history | REFERENCES     | NO
+ app_admin   | app          | task_history | SELECT         | NO
+ app_admin   | app          | task_history | TRIGGER        | NO
+ app_admin   | app          | task_history | TRUNCATE       | NO
+ app_admin   | app          | task_history | UPDATE         | NO
+ app_admin   | app          | tasks        | DELETE         | NO
+ app_admin   | app          | tasks        | INSERT         | NO
+ app_admin   | app          | tasks        | REFERENCES     | NO
+ app_admin   | app          | tasks        | SELECT         | NO
+ app_admin   | app          | tasks        | TRIGGER        | NO
+ app_admin   | app          | tasks        | TRUNCATE       | NO
+ app_admin   | app          | tasks        | UPDATE         | NO
+ app_admin   | app          | users        | DELETE         | NO
+ app_admin   | app          | users        | INSERT         | NO
+ app_admin   | app          | users        | REFERENCES     | NO
+ app_admin   | app          | users        | SELECT         | NO
+ app_admin   | app          | users        | TRIGGER        | NO
+ app_admin   | app          | users        | TRUNCATE       | NO
+ app_admin   | app          | users        | UPDATE         | NO
+ app_manager | app          | comments     | DELETE         | NO
+ app_manager | app          | comments     | INSERT         | NO
+ app_manager | app          | comments     | SELECT         | NO
+ app_manager | app          | comments     | UPDATE         | NO
+ app_manager | app          | projects     | INSERT         | NO
+ app_manager | app          | projects     | SELECT         | NO
+ app_manager | app          | projects     | UPDATE         | NO
+ app_manager | app          | task_history | INSERT         | NO
+ app_manager | app          | tasks        | DELETE         | NO
+ app_manager | app          | tasks        | INSERT         | NO
+ app_manager | app          | tasks        | SELECT         | NO
+ app_manager | app          | tasks        | UPDATE         | NO
+ app_user    | app          | users        | SELECT         | NO
+(69 rows)
+
+=== 3. Привилегии на схемы (public, app) ===
+ nspname |                               nspacl                               
+---------+--------------------------------------------------------------------
+ public  | {pg_database_owner=UC/pg_database_owner,=U/pg_database_owner}
+ app     | {postgres=UC/postgres,app_connect=U/postgres,app_admin=C/postgres}
+(2 rows)
+
+=== 4. Привилегии на БД corporate_tasks ===
+     datname     |                           datacl                            
+-----------------+-------------------------------------------------------------
+ corporate_tasks | {=Tc/postgres,postgres=CTc/postgres,app_connect=c/postgres}
+(1 row)
+
+=== 5. Последовательности в схеме app ===
+ schemaname |         sequencename          | sequenceowner 
+------------+-------------------------------+---------------
+ app        | access_logs_log_id_seq        | postgres
+ app        | comments_comment_id_seq       | postgres
+ app        | departments_department_id_seq | postgres
+ app        | positions_position_id_seq     | postgres
+ app        | projects_project_id_seq       | postgres
+ app        | task_history_history_id_seq   | postgres
+ app        | tasks_task_id_seq             | postgres
+ app        | users_user_id_seq             | postgres
+(8 rows)
+
+=== 6. Default privileges ===
+ role | schema | defaclobjtype | defaclacl 
+------+--------+---------------+-----------
+(0 rows)
+
+=== 7. Сводка по ролям и количеству прав ===
+      grantee       | total_grants 
+--------------------+--------------
+ app_admin          |           56
+ app_audit_read     |            1
+ app_history_read   |            1
+ app_manager        |           12
+ app_read_all       |            7
+ app_read_reference |            2
+ app_task_worker    |            4
+ app_user           |            1
+(8 rows)
+

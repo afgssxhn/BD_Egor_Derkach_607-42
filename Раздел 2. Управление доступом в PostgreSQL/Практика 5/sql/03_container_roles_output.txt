@@ -1,0 +1,54 @@
+DO
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+CREATE ROLE
+GRANT
+GRANT
+GRANT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+=== Проверка: 9 контейнеров с описаниями ===
+       rolname        | rolcanlogin |                   description                   
+----------------------+-------------+-------------------------------------------------
+ app_access_log_write | f           | Запись в логи доступа
+ app_comments_full    | f           | Полный доступ к комментариям
+ app_connect          | f           | Базовое подключение к БД и схеме
+ app_full_access      | f           | Полный доступ ко всем объектам (админ)
+ app_history_full     | f           | Чтение + запись истории изменений
+ app_project_write    | f           | Чтение + запись проектов
+ app_read_main        | f           | Чтение основных таблиц (users, projects, tasks)
+ app_read_reference   | f           | Чтение справочников (departments, positions)
+ app_task_write       | f           | Чтение + запись задач
+(9 rows)
+

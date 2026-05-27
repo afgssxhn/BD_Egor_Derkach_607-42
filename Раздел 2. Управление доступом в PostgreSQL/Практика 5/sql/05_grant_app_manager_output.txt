@@ -1,0 +1,17 @@
+GRANT ROLE
+GRANT ROLE
+GRANT
+=== Прямые членства app_manager ===
+     inherits      
+-------------------
+ app_project_write
+ app_user
+(2 rows)
+
+=== Колоночные права app_manager ===
+   grantee   | table_name | column_name | privilege_type 
+-------------+------------+-------------+----------------
+ app_manager | comments   | is_internal | SELECT
+ app_manager | comments   | is_internal | UPDATE
+(2 rows)
+

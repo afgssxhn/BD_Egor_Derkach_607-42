@@ -1,0 +1,467 @@
+=== 1. Матрица: эффективные права через все контейнеры ===
+=== 2. Иерархия через pg_auth_members (по app_* ролям) ===
+psql:/tmp/12.sql:27: ERROR:  recursive query "m" column 1 has type text in non-recursive term but type name overall
+LINE 14:         SELECT 'app_user'
+                        ^
+HINT:  Cast the output of the non-recursive term to the correct type.
+     role      |    inherits_from     
+---------------+----------------------
+ admin_diana   | app_admin
+ app_admin     | app_full_access
+ app_admin     | app_manager
+ app_manager   | app_project_write
+ app_manager   | app_user
+ app_user      | app_access_log_write
+ app_user      | app_comments_full
+ app_user      | app_connect
+ app_user      | app_history_full
+ app_user      | app_read_main
+ app_user      | app_read_reference
+ app_user      | app_task_write
+ dev_alice     | app_user
+ dev_charlie   | app_user
+ marketing_eve | app_connect
+ marketing_eve | app_read_main
+ marketing_eve | app_read_reference
+ pm_bob        | app_manager
+(18 rows)
+
+=== 3. DEFAULT PRIVILEGES (после Этапа 6) ===
+  creator  | schema | obj |                                            defaclacl                                             
+-----------+--------+-----+--------------------------------------------------------------------------------------------------
+ app_admin | app    | r   | {app_read_reference=r/app_admin,app_task_write=arwd/app_admin,app_full_access=arwdDxt/app_admin}
+ app_admin | app    | S   | {app_task_write=U/app_admin,app_full_access=rwU/app_admin}
+(2 rows)
+
+=== 4. has_*_privilege для трёх ролей ===
+SET
+   who    | users_select | users_insert | tasks_delete | comments_insert | access_logs_select | access_logs_insert 
+----------+--------------+--------------+--------------+-----------------+--------------------+--------------------
+ app_user | t            | f            | f            | t               | f                  | t
+(1 row)
+
+RESET
+SET
+     who     | projects_insert | projects_delete | internal_update | access_logs_select 
+-------------+-----------------+-----------------+-----------------+--------------------
+ app_manager | t               | f               | t               | f
+(1 row)
+
+RESET
+SET
+    who    | tasks_delete | schema_create | schema_usage | db_create 
+-----------+--------------+---------------+--------------+-----------
+ app_admin | t            | t             | t            | f
+(1 row)
+
+RESET
+=== 5. Колоночные права (что осталось после переделки) ===
+       grantee        |  table_name  |   column_name   | privilege_type 
+----------------------+--------------+-----------------+----------------
+ app_access_log_write | access_logs  | action          | INSERT
+ app_access_log_write | access_logs  | ip_address      | INSERT
+ app_access_log_write | access_logs  | log_id          | INSERT
+ app_access_log_write | access_logs  | logged_at       | INSERT
+ app_access_log_write | access_logs  | resource_id     | INSERT
+ app_access_log_write | access_logs  | resource_type   | INSERT
+ app_access_log_write | access_logs  | user_id         | INSERT
+ app_comments_full    | comments     | comment_id      | INSERT
+ app_comments_full    | comments     | comment_id      | SELECT
+ app_comments_full    | comments     | comment_id      | UPDATE
+ app_comments_full    | comments     | content         | INSERT
+ app_comments_full    | comments     | content         | SELECT
+ app_comments_full    | comments     | content         | UPDATE
+ app_comments_full    | comments     | created_at      | INSERT
+ app_comments_full    | comments     | created_at      | SELECT
+ app_comments_full    | comments     | created_at      | UPDATE
+ app_comments_full    | comments     | is_internal     | INSERT
+ app_comments_full    | comments     | is_internal     | SELECT
+ app_comments_full    | comments     | is_internal     | UPDATE
+ app_comments_full    | comments     | task_id         | INSERT
+ app_comments_full    | comments     | task_id         | SELECT
+ app_comments_full    | comments     | task_id         | UPDATE
+ app_comments_full    | comments     | user_id         | INSERT
+ app_comments_full    | comments     | user_id         | SELECT
+ app_comments_full    | comments     | user_id         | UPDATE
+ app_full_access      | access_logs  | action          | INSERT
+ app_full_access      | access_logs  | action          | REFERENCES
+ app_full_access      | access_logs  | action          | SELECT
+ app_full_access      | access_logs  | action          | UPDATE
+ app_full_access      | access_logs  | ip_address      | INSERT
+ app_full_access      | access_logs  | ip_address      | REFERENCES
+ app_full_access      | access_logs  | ip_address      | SELECT
+ app_full_access      | access_logs  | ip_address      | UPDATE
+ app_full_access      | access_logs  | log_id          | INSERT
+ app_full_access      | access_logs  | log_id          | REFERENCES
+ app_full_access      | access_logs  | log_id          | SELECT
+ app_full_access      | access_logs  | log_id          | UPDATE
+ app_full_access      | access_logs  | logged_at       | INSERT
+ app_full_access      | access_logs  | logged_at       | REFERENCES
+ app_full_access      | access_logs  | logged_at       | SELECT
+ app_full_access      | access_logs  | logged_at       | UPDATE
+ app_full_access      | access_logs  | resource_id     | INSERT
+ app_full_access      | access_logs  | resource_id     | REFERENCES
+ app_full_access      | access_logs  | resource_id     | SELECT
+ app_full_access      | access_logs  | resource_id     | UPDATE
+ app_full_access      | access_logs  | resource_type   | INSERT
+ app_full_access      | access_logs  | resource_type   | REFERENCES
+ app_full_access      | access_logs  | resource_type   | SELECT
+ app_full_access      | access_logs  | resource_type   | UPDATE
+ app_full_access      | access_logs  | user_id         | INSERT
+ app_full_access      | access_logs  | user_id         | REFERENCES
+ app_full_access      | access_logs  | user_id         | SELECT
+ app_full_access      | access_logs  | user_id         | UPDATE
+ app_full_access      | comments     | comment_id      | INSERT
+ app_full_access      | comments     | comment_id      | REFERENCES
+ app_full_access      | comments     | comment_id      | SELECT
+ app_full_access      | comments     | comment_id      | UPDATE
+ app_full_access      | comments     | content         | INSERT
+ app_full_access      | comments     | content         | REFERENCES
+ app_full_access      | comments     | content         | SELECT
+ app_full_access      | comments     | content         | UPDATE
+ app_full_access      | comments     | created_at      | INSERT
+ app_full_access      | comments     | created_at      | REFERENCES
+ app_full_access      | comments     | created_at      | SELECT
+ app_full_access      | comments     | created_at      | UPDATE
+ app_full_access      | comments     | is_internal     | INSERT
+ app_full_access      | comments     | is_internal     | REFERENCES
+ app_full_access      | comments     | is_internal     | SELECT
+ app_full_access      | comments     | is_internal     | UPDATE
+ app_full_access      | comments     | task_id         | INSERT
+ app_full_access      | comments     | task_id         | REFERENCES
+ app_full_access      | comments     | task_id         | SELECT
+ app_full_access      | comments     | task_id         | UPDATE
+ app_full_access      | comments     | user_id         | INSERT
+ app_full_access      | comments     | user_id         | REFERENCES
+ app_full_access      | comments     | user_id         | SELECT
+ app_full_access      | comments     | user_id         | UPDATE
+ app_full_access      | departments  | created_at      | INSERT
+ app_full_access      | departments  | created_at      | REFERENCES
+ app_full_access      | departments  | created_at      | SELECT
+ app_full_access      | departments  | created_at      | UPDATE
+ app_full_access      | departments  | department_id   | INSERT
+ app_full_access      | departments  | department_id   | REFERENCES
+ app_full_access      | departments  | department_id   | SELECT
+ app_full_access      | departments  | department_id   | UPDATE
+ app_full_access      | departments  | description     | INSERT
+ app_full_access      | departments  | description     | REFERENCES
+ app_full_access      | departments  | description     | SELECT
+ app_full_access      | departments  | description     | UPDATE
+ app_full_access      | departments  | name            | INSERT
+ app_full_access      | departments  | name            | REFERENCES
+ app_full_access      | departments  | name            | SELECT
+ app_full_access      | departments  | name            | UPDATE
+ app_full_access      | positions    | description     | INSERT
+ app_full_access      | positions    | description     | REFERENCES
+ app_full_access      | positions    | description     | SELECT
+ app_full_access      | positions    | description     | UPDATE
+ app_full_access      | positions    | level           | INSERT
+ app_full_access      | positions    | level           | REFERENCES
+ app_full_access      | positions    | level           | SELECT
+ app_full_access      | positions    | level           | UPDATE
+ app_full_access      | positions    | position_id     | INSERT
+ app_full_access      | positions    | position_id     | REFERENCES
+ app_full_access      | positions    | position_id     | SELECT
+ app_full_access      | positions    | position_id     | UPDATE
+ app_full_access      | positions    | title           | INSERT
+ app_full_access      | positions    | title           | REFERENCES
+ app_full_access      | positions    | title           | SELECT
+ app_full_access      | positions    | title           | UPDATE
+ app_full_access      | projects     | budget          | INSERT
+ app_full_access      | projects     | budget          | REFERENCES
+ app_full_access      | projects     | budget          | SELECT
+ app_full_access      | projects     | budget          | UPDATE
+ app_full_access      | projects     | created_at      | INSERT
+ app_full_access      | projects     | created_at      | REFERENCES
+ app_full_access      | projects     | created_at      | SELECT
+ app_full_access      | projects     | created_at      | UPDATE
+ app_full_access      | projects     | department_id   | INSERT
+ app_full_access      | projects     | department_id   | REFERENCES
+ app_full_access      | projects     | department_id   | SELECT
+ app_full_access      | projects     | department_id   | UPDATE
+ app_full_access      | projects     | description     | INSERT
+ app_full_access      | projects     | description     | REFERENCES
+ app_full_access      | projects     | description     | SELECT
+ app_full_access      | projects     | description     | UPDATE
+ app_full_access      | projects     | end_date        | INSERT
+ app_full_access      | projects     | end_date        | REFERENCES
+ app_full_access      | projects     | end_date        | SELECT
+ app_full_access      | projects     | end_date        | UPDATE
+ app_full_access      | projects     | name            | INSERT
+ app_full_access      | projects     | name            | REFERENCES
+ app_full_access      | projects     | name            | SELECT
+ app_full_access      | projects     | name            | UPDATE
+ app_full_access      | projects     | owner_id        | INSERT
+ app_full_access      | projects     | owner_id        | REFERENCES
+ app_full_access      | projects     | owner_id        | SELECT
+ app_full_access      | projects     | owner_id        | UPDATE
+ app_full_access      | projects     | project_id      | INSERT
+ app_full_access      | projects     | project_id      | REFERENCES
+ app_full_access      | projects     | project_id      | SELECT
+ app_full_access      | projects     | project_id      | UPDATE
+ app_full_access      | projects     | start_date      | INSERT
+ app_full_access      | projects     | start_date      | REFERENCES
+ app_full_access      | projects     | start_date      | SELECT
+ app_full_access      | projects     | start_date      | UPDATE
+ app_full_access      | projects     | status          | INSERT
+ app_full_access      | projects     | status          | REFERENCES
+ app_full_access      | projects     | status          | SELECT
+ app_full_access      | projects     | status          | UPDATE
+ app_full_access      | task_history | changed_at      | INSERT
+ app_full_access      | task_history | changed_at      | REFERENCES
+ app_full_access      | task_history | changed_at      | SELECT
+ app_full_access      | task_history | changed_at      | UPDATE
+ app_full_access      | task_history | changed_by      | INSERT
+ app_full_access      | task_history | changed_by      | REFERENCES
+ app_full_access      | task_history | changed_by      | SELECT
+ app_full_access      | task_history | changed_by      | UPDATE
+ app_full_access      | task_history | field_name      | INSERT
+ app_full_access      | task_history | field_name      | REFERENCES
+ app_full_access      | task_history | field_name      | SELECT
+ app_full_access      | task_history | field_name      | UPDATE
+ app_full_access      | task_history | history_id      | INSERT
+ app_full_access      | task_history | history_id      | REFERENCES
+ app_full_access      | task_history | history_id      | SELECT
+ app_full_access      | task_history | history_id      | UPDATE
+ app_full_access      | task_history | new_value       | INSERT
+ app_full_access      | task_history | new_value       | REFERENCES
+ app_full_access      | task_history | new_value       | SELECT
+ app_full_access      | task_history | new_value       | UPDATE
+ app_full_access      | task_history | old_value       | INSERT
+ app_full_access      | task_history | old_value       | REFERENCES
+ app_full_access      | task_history | old_value       | SELECT
+ app_full_access      | task_history | old_value       | UPDATE
+ app_full_access      | task_history | task_id         | INSERT
+ app_full_access      | task_history | task_id         | REFERENCES
+ app_full_access      | task_history | task_id         | SELECT
+ app_full_access      | task_history | task_id         | UPDATE
+ app_full_access      | tasks        | actual_hours    | INSERT
+ app_full_access      | tasks        | actual_hours    | REFERENCES
+ app_full_access      | tasks        | actual_hours    | SELECT
+ app_full_access      | tasks        | actual_hours    | UPDATE
+ app_full_access      | tasks        | assignee_id     | INSERT
+ app_full_access      | tasks        | assignee_id     | REFERENCES
+ app_full_access      | tasks        | assignee_id     | SELECT
+ app_full_access      | tasks        | assignee_id     | UPDATE
+ app_full_access      | tasks        | created_at      | INSERT
+ app_full_access      | tasks        | created_at      | REFERENCES
+ app_full_access      | tasks        | created_at      | SELECT
+ app_full_access      | tasks        | created_at      | UPDATE
+ app_full_access      | tasks        | created_by      | INSERT
+ app_full_access      | tasks        | created_by      | REFERENCES
+ app_full_access      | tasks        | created_by      | SELECT
+ app_full_access      | tasks        | created_by      | UPDATE
+ app_full_access      | tasks        | description     | INSERT
+ app_full_access      | tasks        | description     | REFERENCES
+ app_full_access      | tasks        | description     | SELECT
+ app_full_access      | tasks        | description     | UPDATE
+ app_full_access      | tasks        | due_date        | INSERT
+ app_full_access      | tasks        | due_date        | REFERENCES
+ app_full_access      | tasks        | due_date        | SELECT
+ app_full_access      | tasks        | due_date        | UPDATE
+ app_full_access      | tasks        | estimated_hours | INSERT
+ app_full_access      | tasks        | estimated_hours | REFERENCES
+ app_full_access      | tasks        | estimated_hours | SELECT
+ app_full_access      | tasks        | estimated_hours | UPDATE
+ app_full_access      | tasks        | priority        | INSERT
+ app_full_access      | tasks        | priority        | REFERENCES
+ app_full_access      | tasks        | priority        | SELECT
+ app_full_access      | tasks        | priority        | UPDATE
+ app_full_access      | tasks        | project_id      | INSERT
+ app_full_access      | tasks        | project_id      | REFERENCES
+ app_full_access      | tasks        | project_id      | SELECT
+ app_full_access      | tasks        | project_id      | UPDATE
+ app_full_access      | tasks        | status          | INSERT
+ app_full_access      | tasks        | status          | REFERENCES
+ app_full_access      | tasks        | status          | SELECT
+ app_full_access      | tasks        | status          | UPDATE
+ app_full_access      | tasks        | task_id         | INSERT
+ app_full_access      | tasks        | task_id         | REFERENCES
+ app_full_access      | tasks        | task_id         | SELECT
+ app_full_access      | tasks        | task_id         | UPDATE
+ app_full_access      | tasks        | title           | INSERT
+ app_full_access      | tasks        | title           | REFERENCES
+ app_full_access      | tasks        | title           | SELECT
+ app_full_access      | tasks        | title           | UPDATE
+ app_full_access      | tasks        | updated_at      | INSERT
+ app_full_access      | tasks        | updated_at      | REFERENCES
+ app_full_access      | tasks        | updated_at      | SELECT
+ app_full_access      | tasks        | updated_at      | UPDATE
+ app_full_access      | users        | created_at      | INSERT
+ app_full_access      | users        | created_at      | REFERENCES
+ app_full_access      | users        | created_at      | SELECT
+ app_full_access      | users        | created_at      | UPDATE
+ app_full_access      | users        | department_id   | INSERT
+ app_full_access      | users        | department_id   | REFERENCES
+ app_full_access      | users        | department_id   | SELECT
+ app_full_access      | users        | department_id   | UPDATE
+ app_full_access      | users        | email           | INSERT
+ app_full_access      | users        | email           | REFERENCES
+ app_full_access      | users        | email           | SELECT
+ app_full_access      | users        | email           | UPDATE
+ app_full_access      | users        | full_name       | INSERT
+ app_full_access      | users        | full_name       | REFERENCES
+ app_full_access      | users        | full_name       | SELECT
+ app_full_access      | users        | full_name       | UPDATE
+ app_full_access      | users        | is_active       | INSERT
+ app_full_access      | users        | is_active       | REFERENCES
+ app_full_access      | users        | is_active       | SELECT
+ app_full_access      | users        | is_active       | UPDATE
+ app_full_access      | users        | password_hash   | INSERT
+ app_full_access      | users        | password_hash   | REFERENCES
+ app_full_access      | users        | password_hash   | SELECT
+ app_full_access      | users        | password_hash   | UPDATE
+ app_full_access      | users        | position_id     | INSERT
+ app_full_access      | users        | position_id     | REFERENCES
+ app_full_access      | users        | position_id     | SELECT
+ app_full_access      | users        | position_id     | UPDATE
+ app_full_access      | users        | updated_at      | INSERT
+ app_full_access      | users        | updated_at      | REFERENCES
+ app_full_access      | users        | updated_at      | SELECT
+ app_full_access      | users        | updated_at      | UPDATE
+ app_full_access      | users        | user_id         | INSERT
+ app_full_access      | users        | user_id         | REFERENCES
+ app_full_access      | users        | user_id         | SELECT
+ app_full_access      | users        | user_id         | UPDATE
+ app_full_access      | users        | username        | INSERT
+ app_full_access      | users        | username        | REFERENCES
+ app_full_access      | users        | username        | SELECT
+ app_full_access      | users        | username        | UPDATE
+ app_history_full     | task_history | changed_at      | INSERT
+ app_history_full     | task_history | changed_at      | SELECT
+ app_history_full     | task_history | changed_by      | INSERT
+ app_history_full     | task_history | changed_by      | SELECT
+ app_history_full     | task_history | field_name      | INSERT
+ app_history_full     | task_history | field_name      | SELECT
+ app_history_full     | task_history | history_id      | INSERT
+ app_history_full     | task_history | history_id      | SELECT
+ app_history_full     | task_history | new_value       | INSERT
+ app_history_full     | task_history | new_value       | SELECT
+ app_history_full     | task_history | old_value       | INSERT
+ app_history_full     | task_history | old_value       | SELECT
+ app_history_full     | task_history | task_id         | INSERT
+ app_history_full     | task_history | task_id         | SELECT
+ app_manager          | comments     | is_internal     | SELECT
+ app_manager          | comments     | is_internal     | UPDATE
+ app_project_write    | projects     | budget          | INSERT
+ app_project_write    | projects     | budget          | SELECT
+ app_project_write    | projects     | budget          | UPDATE
+ app_project_write    | projects     | created_at      | INSERT
+ app_project_write    | projects     | created_at      | SELECT
+ app_project_write    | projects     | created_at      | UPDATE
+ app_project_write    | projects     | department_id   | INSERT
+ app_project_write    | projects     | department_id   | SELECT
+ app_project_write    | projects     | department_id   | UPDATE
+ app_project_write    | projects     | description     | INSERT
+ app_project_write    | projects     | description     | SELECT
+ app_project_write    | projects     | description     | UPDATE
+ app_project_write    | projects     | end_date        | INSERT
+ app_project_write    | projects     | end_date        | SELECT
+ app_project_write    | projects     | end_date        | UPDATE
+ app_project_write    | projects     | name            | INSERT
+ app_project_write    | projects     | name            | SELECT
+ app_project_write    | projects     | name            | UPDATE
+ app_project_write    | projects     | owner_id        | INSERT
+ app_project_write    | projects     | owner_id        | SELECT
+ app_project_write    | projects     | owner_id        | UPDATE
+ app_project_write    | projects     | project_id      | INSERT
+ app_project_write    | projects     | project_id      | SELECT
+ app_project_write    | projects     | project_id      | UPDATE
+ app_project_write    | projects     | start_date      | INSERT
+ app_project_write    | projects     | start_date      | SELECT
+ app_project_write    | projects     | start_date      | UPDATE
+ app_project_write    | projects     | status          | INSERT
+ app_project_write    | projects     | status          | SELECT
+ app_project_write    | projects     | status          | UPDATE
+ app_read_main        | projects     | budget          | SELECT
+ app_read_main        | projects     | created_at      | SELECT
+ app_read_main        | projects     | department_id   | SELECT
+ app_read_main        | projects     | description     | SELECT
+ app_read_main        | projects     | end_date        | SELECT
+ app_read_main        | projects     | name            | SELECT
+ app_read_main        | projects     | owner_id        | SELECT
+ app_read_main        | projects     | project_id      | SELECT
+ app_read_main        | projects     | start_date      | SELECT
+ app_read_main        | projects     | status          | SELECT
+ app_read_main        | tasks        | actual_hours    | SELECT
+ app_read_main        | tasks        | assignee_id     | SELECT
+ app_read_main        | tasks        | created_at      | SELECT
+ app_read_main        | tasks        | created_by      | SELECT
+ app_read_main        | tasks        | description     | SELECT
+ app_read_main        | tasks        | due_date        | SELECT
+ app_read_main        | tasks        | estimated_hours | SELECT
+ app_read_main        | tasks        | priority        | SELECT
+ app_read_main        | tasks        | project_id      | SELECT
+ app_read_main        | tasks        | status          | SELECT
+ app_read_main        | tasks        | task_id         | SELECT
+ app_read_main        | tasks        | title           | SELECT
+ app_read_main        | tasks        | updated_at      | SELECT
+ app_read_main        | users        | created_at      | SELECT
+ app_read_main        | users        | department_id   | SELECT
+ app_read_main        | users        | email           | SELECT
+ app_read_main        | users        | full_name       | SELECT
+ app_read_main        | users        | is_active       | SELECT
+ app_read_main        | users        | password_hash   | SELECT
+ app_read_main        | users        | position_id     | SELECT
+ app_read_main        | users        | updated_at      | SELECT
+ app_read_main        | users        | user_id         | SELECT
+ app_read_main        | users        | username        | SELECT
+ app_read_reference   | departments  | created_at      | SELECT
+ app_read_reference   | departments  | department_id   | SELECT
+ app_read_reference   | departments  | description     | SELECT
+ app_read_reference   | departments  | name            | SELECT
+ app_read_reference   | positions    | description     | SELECT
+ app_read_reference   | positions    | level           | SELECT
+ app_read_reference   | positions    | position_id     | SELECT
+ app_read_reference   | positions    | title           | SELECT
+ app_task_write       | projects     | budget          | SELECT
+ app_task_write       | projects     | created_at      | SELECT
+ app_task_write       | projects     | department_id   | SELECT
+ app_task_write       | projects     | description     | SELECT
+ app_task_write       | projects     | end_date        | SELECT
+ app_task_write       | projects     | name            | SELECT
+ app_task_write       | projects     | owner_id        | SELECT
+ app_task_write       | projects     | project_id      | SELECT
+ app_task_write       | projects     | start_date      | SELECT
+ app_task_write       | projects     | status          | SELECT
+ app_task_write       | tasks        | actual_hours    | INSERT
+ app_task_write       | tasks        | actual_hours    | SELECT
+ app_task_write       | tasks        | actual_hours    | UPDATE
+ app_task_write       | tasks        | assignee_id     | INSERT
+ app_task_write       | tasks        | assignee_id     | SELECT
+ app_task_write       | tasks        | assignee_id     | UPDATE
+ app_task_write       | tasks        | created_at      | INSERT
+ app_task_write       | tasks        | created_at      | SELECT
+ app_task_write       | tasks        | created_at      | UPDATE
+ app_task_write       | tasks        | created_by      | INSERT
+ app_task_write       | tasks        | created_by      | SELECT
+ app_task_write       | tasks        | created_by      | UPDATE
+ app_task_write       | tasks        | description     | INSERT
+ app_task_write       | tasks        | description     | SELECT
+ app_task_write       | tasks        | description     | UPDATE
+ app_task_write       | tasks        | due_date        | INSERT
+ app_task_write       | tasks        | due_date        | SELECT
+ app_task_write       | tasks        | due_date        | UPDATE
+ app_task_write       | tasks        | estimated_hours | INSERT
+ app_task_write       | tasks        | estimated_hours | SELECT
+ app_task_write       | tasks        | estimated_hours | UPDATE
+ app_task_write       | tasks        | priority        | INSERT
+ app_task_write       | tasks        | priority        | SELECT
+ app_task_write       | tasks        | priority        | UPDATE
+ app_task_write       | tasks        | project_id      | INSERT
+ app_task_write       | tasks        | project_id      | SELECT
+ app_task_write       | tasks        | project_id      | UPDATE
+ app_task_write       | tasks        | status          | INSERT
+ app_task_write       | tasks        | status          | SELECT
+ app_task_write       | tasks        | status          | UPDATE
+ app_task_write       | tasks        | task_id         | INSERT
+ app_task_write       | tasks        | task_id         | SELECT
+ app_task_write       | tasks        | task_id         | UPDATE
+ app_task_write       | tasks        | title           | INSERT
+ app_task_write       | tasks        | title           | SELECT
+ app_task_write       | tasks        | title           | UPDATE
+ app_task_write       | tasks        | updated_at      | INSERT
+ app_task_write       | tasks        | updated_at      | SELECT
+ app_task_write       | tasks        | updated_at      | UPDATE
+(405 rows)
+
