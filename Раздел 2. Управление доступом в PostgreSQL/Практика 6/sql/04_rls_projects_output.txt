@@ -1,0 +1,21 @@
+ALTER TABLE
+DROP POLICY
+DROP POLICY
+psql:/tmp/04_rls_projects.sql:4: NOTICE:  policy "projects_user_read" for relation "app.projects" does not exist, skipping
+psql:/tmp/04_rls_projects.sql:5: NOTICE:  policy "projects_manager_read" for relation "app.projects" does not exist, skipping
+psql:/tmp/04_rls_projects.sql:6: NOTICE:  policy "projects_manager_write" for relation "app.projects" does not exist, skipping
+DROP POLICY
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+=== Политики app.projects ===
+       policyname       |  cmd   |     roles     
+------------------------+--------+---------------
+ projects_admin_all     | ALL    | {app_admin}
+ projects_manager_read  | SELECT | {app_manager}
+ projects_manager_write | ALL    | {app_manager}
+ projects_user_read     | SELECT | {app_user}
+(4 rows)
+

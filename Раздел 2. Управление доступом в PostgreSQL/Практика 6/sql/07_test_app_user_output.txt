@@ -1,0 +1,76 @@
+SET
+ current_user | session_user | my_id 
+--------------+--------------+-------
+ dev_alice    | postgres     |     1
+(1 row)
+
+=== Тест 1: видит только свои задачи ===
+ task_id |         title         | assignee_id 
+---------+-----------------------+-------------
+       5 | Requirements analysis |           1
+(1 row)
+
+=== Тест 2: COUNT задач dev_alice vs общий (под admin для сравнения) ===
+ dev_alice_sees 
+----------------
+              1
+(1 row)
+
+RESET
+ total_in_db 
+-------------
+          11
+(1 row)
+
+SET
+=== Тест 3a: INSERT задачи на себя (успех) ===
+INSERT 0 1
+=== Тест 3b: INSERT задачи на чужого (отказ WITH CHECK) ===
+psql:/tmp/07_test_app_user.sql:22: ERROR:  new row violates row-level security policy for table "tasks"
+=== Тест 4: UPDATE своей задачи (успех) ===
+ task_id |         title         |   status    
+---------+-----------------------+-------------
+      22 | RLS test: my own task | in_progress
+(1 row)
+
+UPDATE 1
+=== Тест 5: SELECT app.users — только сам ===
+ user_id | username  |   full_name   
+---------+-----------+---------------
+       1 | dev_alice | Alice Johnson
+(1 row)
+
+=== Тест 6: SELECT app.comments — свои + не-внутренние к своим задачам ===
+ comment_id | task_id | user_id | is_internal |            content             
+------------+---------+---------+-------------+--------------------------------
+          1 |       1 |       1 | t           | Please make sure the design is
+          3 |       5 |       1 | f           | Requirements approved by stake
+          5 |       9 |       1 | t           | Hold the launch until legal re
+          6 |       1 |       1 | f           | Comment from dev_alice via SET
+          7 |       1 |       1 | f           | Test from dev_alice via SET RO
+          8 |       1 |       1 | f           | Test from dev_alice via SET RO
+          9 |       1 |       1 | f           | Test from dev_alice via SET RO
+         10 |       1 |       1 | f           | Test from dev_alice via SET RO
+(8 rows)
+
+=== Тест 7a: INSERT обычного коммента к своей задаче (успех) ===
+ comment_id 
+------------
+         21
+(1 row)
+
+INSERT 0 1
+=== Тест 7b: INSERT внутреннего коммента (отказ WITH CHECK) ===
+psql:/tmp/07_test_app_user.sql:43: ERROR:  new row violates row-level security policy for table "comments"
+=== Тест 8: SELECT app.projects — только свои + участвующие ===
+ project_id |          name           
+------------+-------------------------
+          1 | Website Redesign
+          2 | Mobile App
+          4 | Test Project by pm_bob
+          5 | Manager Test Project P5
+(4 rows)
+
+RESET
+DELETE 1
+DELETE 1

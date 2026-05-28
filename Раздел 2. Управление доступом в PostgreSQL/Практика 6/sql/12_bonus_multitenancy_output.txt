@@ -1,0 +1,84 @@
+CREATE SCHEMA
+DROP TABLE
+psql:/tmp/12.sql:6: NOTICE:  table "invoices" does not exist, skipping
+CREATE TABLE
+INSERT 0 8
+DROP ROLE
+DROP ROLE
+psql:/tmp/12.sql:26: NOTICE:  role "tenant_app_user" does not exist, skipping
+psql:/tmp/12.sql:27: NOTICE:  role "tenant_app" does not exist, skipping
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+GRANT
+GRANT
+GRANT
+ALTER TABLE
+DROP POLICY
+psql:/tmp/12.sql:40: NOTICE:  policy "invoices_tenant_isolation" for relation "tenant_demo.invoices" does not exist, skipping
+CREATE POLICY
+=== Тест 1: tenant_id=1 ===
+BEGIN
+SET
+SET
+ invoice_id | tenant_id | customer_name | amount  
+------------+-----------+---------------+---------
+          1 |         1 | Acme Corp     | 1500.00
+          2 |         1 | Acme Corp     | 2300.50
+          3 |         1 | Initech       |  900.00
+(3 rows)
+
+COMMIT
+=== Тест 2: tenant_id=2 ===
+BEGIN
+SET
+SET
+ invoice_id | tenant_id | customer_name | amount  
+------------+-----------+---------------+---------
+          4 |         2 | Hooli         | 4200.75
+          5 |         2 | Pied Piper    | 3100.00
+          6 |         2 | Bachmanity    |  800.25
+(3 rows)
+
+COMMIT
+=== Тест 3: tenant_id=3 ===
+BEGIN
+SET
+SET
+ invoice_id | tenant_id |   customer_name   |  amount  
+------------+-----------+-------------------+----------
+          7 |         3 | Stark Industries  | 10500.00
+          8 |         3 | Wayne Enterprises |  7800.40
+(2 rows)
+
+COMMIT
+=== Тест 4: INSERT tenant_id=2 при контексте tenant=1 → отказ WITH CHECK ===
+BEGIN
+SET
+SET
+psql:/tmp/12.sql:70: ERROR:  new row violates row-level security policy for table "invoices"
+ROLLBACK
+=== Тест 5: INSERT tenant_id=1 при контексте tenant=1 → успех ===
+BEGIN
+SET
+SET
+ invoice_id | tenant_id | customer_name 
+------------+-----------+---------------
+         10 |         1 | Legit Insert
+(1 row)
+
+INSERT 0 1
+COMMIT
+=== Тест 6: без SET LOCAL app.current_tenant_id → 0 строк (безопасный default) ===
+BEGIN
+SET
+psql:/tmp/12.sql:84: ERROR:  invalid input syntax for type integer: ""
+ROLLBACK
+=== Финальная проверка под postgres — все 9 инвойсов на месте ===
+ tenant_id | count |   sum    
+-----------+-------+----------
+         1 |     4 |  5255.50
+         2 |     3 |  8101.00
+         3 |     2 | 18300.40
+(3 rows)
+

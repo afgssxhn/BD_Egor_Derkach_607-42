@@ -1,0 +1,71 @@
+ALTER TABLE
+=== Флаг RLS на app.tasks ===
+ relname | relrowsecurity 
+---------+----------------
+ tasks   | t
+(1 row)
+
+DROP POLICY
+DROP POLICY
+psql:/tmp/02_rls_tasks.sql:13: NOTICE:  policy "tasks_select_own" for relation "app.tasks" does not exist, skipping
+psql:/tmp/02_rls_tasks.sql:14: NOTICE:  policy "tasks_insert_own" for relation "app.tasks" does not exist, skipping
+DROP POLICY
+psql:/tmp/02_rls_tasks.sql:15: NOTICE:  policy "tasks_update_own" for relation "app.tasks" does not exist, skipping
+psql:/tmp/02_rls_tasks.sql:16: NOTICE:  policy "tasks_delete_own" for relation "app.tasks" does not exist, skipping
+DROP POLICY
+DROP POLICY
+DROP POLICY
+psql:/tmp/02_rls_tasks.sql:17: NOTICE:  policy "tasks_select_managed" for relation "app.tasks" does not exist, skipping
+psql:/tmp/02_rls_tasks.sql:18: NOTICE:  policy "tasks_insert_managed" for relation "app.tasks" does not exist, skipping
+psql:/tmp/02_rls_tasks.sql:19: NOTICE:  policy "tasks_update_managed" for relation "app.tasks" does not exist, skipping
+DROP POLICY
+DROP POLICY
+psql:/tmp/02_rls_tasks.sql:20: NOTICE:  policy "tasks_delete_managed" for relation "app.tasks" does not exist, skipping
+DROP POLICY
+DROP FUNCTION
+DROP FUNCTION
+psql:/tmp/02_rls_tasks.sql:26: NOTICE:  drop cascades to 7 other objects
+DETAIL:  drop cascades to policy comments_user_read on table app.comments
+drop cascades to policy comments_user_insert on table app.comments
+drop cascades to policy comments_user_update on table app.comments
+drop cascades to policy comments_user_delete on table app.comments
+drop cascades to policy projects_user_read on table app.projects
+drop cascades to policy projects_manager_read on table app.projects
+drop cascades to policy projects_manager_write on table app.projects
+DROP FUNCTION
+DROP FUNCTION
+psql:/tmp/02_rls_tasks.sql:28: NOTICE:  drop cascades to policy users_department_read on table app.users
+DROP FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+=== Политики app.tasks ===
+      policyname      |  cmd   |     roles     
+----------------------+--------+---------------
+ tasks_admin_all      | ALL    | {app_admin}
+ tasks_delete_managed | DELETE | {app_manager}
+ tasks_delete_own     | DELETE | {app_user}
+ tasks_insert_managed | INSERT | {app_manager}
+ tasks_insert_own     | INSERT | {app_user}
+ tasks_select_managed | SELECT | {app_manager}
+ tasks_select_own     | SELECT | {app_user}
+ tasks_update_managed | UPDATE | {app_manager}
+ tasks_update_own     | UPDATE | {app_user}
+(9 rows)
+

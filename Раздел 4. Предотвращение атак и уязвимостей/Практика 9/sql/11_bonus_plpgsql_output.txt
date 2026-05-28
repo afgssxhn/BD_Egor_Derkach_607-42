@@ -1,0 +1,44 @@
+CREATE FUNCTION
+=== Нормальный вызов: ищем alice ===
+ user_id | username | role_name 
+---------+----------+-----------
+       1 | alice    | employee
+(1 row)
+
+=== Атака: p_username =  OR 1=1 -- ===
+ user_id | username | role_name 
+---------+----------+-----------
+       1 | alice    | employee
+       2 | bob      | manager
+       3 | carol    | admin
+(3 rows)
+
+CREATE FUNCTION
+=== Нормальный вызов безопасной версии: alice ===
+ user_id | username | role_name 
+---------+----------+-----------
+       1 | alice    | employee
+(1 row)
+
+=== Та же атака на безопасной версии: ожидаем 0 строк ===
+ user_id | username | role_name 
+---------+----------+-----------
+(0 rows)
+
+=== Защита от инъекции через имя таблицы: попытка передать users; DROP TABLE ===
+psql:/tmp/11.sql:46: ERROR:  relation "injection_lab.users; DROP TABLE injection_lab.tasks; --" does not exist
+LINE 1: SELECT user_id, username, role_name FROM injection_lab."user...
+                                                 ^
+QUERY:  SELECT user_id, username, role_name FROM injection_lab."users; DROP TABLE injection_lab.tasks; --" WHERE username = $1
+CONTEXT:  PL/pgSQL function injection_lab.find_user_safe(text,text,text) line 3 at RETURN QUERY
+=== Состояние стенда — таблицы целы ===
+ count 
+-------
+     4
+(1 row)
+
+ count 
+-------
+     3
+(1 row)
+

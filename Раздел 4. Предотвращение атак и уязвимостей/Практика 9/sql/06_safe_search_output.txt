@@ -1,0 +1,14 @@
+DEALLOCATE ALL
+PREPARE
+=== Нормальный поиск (status=new) ===
+ task_id |          title          | status | priority 
+---------+-------------------------+--------+----------
+       2 | Проверить права доступа | new    | critical
+       4 | Закрыть инцидент        | new    | high
+(2 rows)
+
+=== Тот же вредоносный ввод — пустой результат ===
+ task_id | title | status | priority 
+---------+-------+--------+----------
+(0 rows)
+

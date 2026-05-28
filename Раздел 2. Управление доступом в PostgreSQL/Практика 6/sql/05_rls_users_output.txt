@@ -1,0 +1,19 @@
+ALTER TABLE
+DROP POLICY
+DROP POLICY
+DROP POLICY
+psql:/tmp/05_rls_users.sql:9: NOTICE:  policy "users_department_read" for relation "app.users" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+=== Политики app.users ===
+      policyname       |  cmd   |     roles     
+-----------------------+--------+---------------
+ users_admin_all       | ALL    | {app_admin}
+ users_department_read | SELECT | {app_manager}
+ users_self_read       | SELECT | {app_user}
+ users_self_update     | UPDATE | {app_user}
+(4 rows)
+

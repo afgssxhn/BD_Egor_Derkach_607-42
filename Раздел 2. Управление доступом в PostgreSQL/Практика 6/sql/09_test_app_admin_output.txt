@@ -1,0 +1,47 @@
+SET
+ current_user | my_id 
+--------------+-------
+ admin_diana  |     4
+(1 row)
+
+=== Тест 1: видит все задачи ===
+ admin_sees_tasks 
+------------------
+               11
+(1 row)
+
+=== Тест 2: видит все комменты (включая внутренние) ===
+ total | internal_visible 
+-------+------------------
+    10 |                4
+(1 row)
+
+=== Тест 3: видит всех users ===
+ admin_sees_users 
+------------------
+                5
+(1 row)
+
+=== Тест 4a: UPDATE любой задачи ===
+ task_id | status 
+---------+--------
+       1 | review
+(1 row)
+
+UPDATE 1
+UPDATE 1
+=== Тест 4b: INSERT в проект ===
+ project_id |          name           
+------------+-------------------------
+          7 | RLS test: admin project
+(1 row)
+
+INSERT 0 1
+=== Тест 4c: DELETE проекта ===
+ project_id 
+------------
+          7
+(1 row)
+
+DELETE 1
+RESET

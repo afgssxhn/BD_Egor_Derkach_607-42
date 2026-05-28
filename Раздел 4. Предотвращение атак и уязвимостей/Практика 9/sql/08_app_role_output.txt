@@ -1,0 +1,15 @@
+psql:/tmp/08_app_role.sql:2: NOTICE:  role "web_app_demo" does not exist, skipping
+DROP ROLE
+CREATE ROLE
+REVOKE
+GRANT
+REVOKE
+GRANT
+GRANT
+GRANT
+=== Атрибуты роли ===
+   rolname    | rolsuper | rolcreatedb | rolcanlogin 
+--------------+----------+-------------+-------------
+ web_app_demo | f        | f           | t
+(1 row)
+

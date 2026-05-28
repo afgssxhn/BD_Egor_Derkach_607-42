@@ -1,0 +1,33 @@
+=== Прямые GRANTы на таблицы для web_app_demo ===
+   grantee    | table_schema  | table_name | privilege_type 
+--------------+---------------+------------+----------------
+ web_app_demo | injection_lab | tasks      | SELECT
+ web_app_demo | injection_lab | users      | SELECT
+(2 rows)
+
+=== Колоночные GRANTы (UPDATE status) ===
+   grantee    | table_name |    column_name    | privilege_type 
+--------------+------------+-------------------+----------------
+ web_app_demo | tasks      | assignee_username | SELECT
+ web_app_demo | tasks      | created_at        | SELECT
+ web_app_demo | tasks      | description       | SELECT
+ web_app_demo | tasks      | priority          | SELECT
+ web_app_demo | tasks      | status            | SELECT
+ web_app_demo | tasks      | status            | UPDATE
+ web_app_demo | tasks      | task_id           | SELECT
+ web_app_demo | tasks      | title             | SELECT
+ web_app_demo | users      | email             | SELECT
+ web_app_demo | users      | full_name         | SELECT
+ web_app_demo | users      | password_plain    | SELECT
+ web_app_demo | users      | role_name         | SELECT
+ web_app_demo | users      | user_id           | SELECT
+ web_app_demo | users      | username          | SELECT
+(14 rows)
+
+=== Сравнение с postgres (суперпольз): что он может на injection_lab.tasks ===
+     who      | sel | ins | upd | del | trunc 
+--------------+-----+-----+-----+-----+-------
+ postgres     | t   | t   | t   | t   | t
+ web_app_demo | t   | f   | f   | f   | f
+(2 rows)
+

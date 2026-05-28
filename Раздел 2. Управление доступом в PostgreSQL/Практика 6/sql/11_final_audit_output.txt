@@ -1,0 +1,80 @@
+=== 1. Таблицы app с включённым RLS ===
+ schemaname |  tablename   | rowsecurity 
+------------+--------------+-------------
+ app        | access_logs  | f
+ app        | comments     | t
+ app        | departments  | f
+ app        | positions    | f
+ app        | projects     | t
+ app        | task_history | f
+ app        | tasks        | t
+ app        | users        | t
+(8 rows)
+
+=== 2. Все политики схемы app ===
+ tablename |       policyname        |  cmd   |     roles     
+-----------+-------------------------+--------+---------------
+ comments  | comments_admin_all      | ALL    | {app_admin}
+ comments  | comments_manager_delete | DELETE | {app_manager}
+ comments  | comments_manager_insert | INSERT | {app_manager}
+ comments  | comments_manager_read   | SELECT | {app_manager}
+ comments  | comments_manager_update | UPDATE | {app_manager}
+ comments  | comments_user_delete    | DELETE | {app_user}
+ comments  | comments_user_insert    | INSERT | {app_user}
+ comments  | comments_user_read      | SELECT | {app_user}
+ comments  | comments_user_update    | UPDATE | {app_user}
+ projects  | projects_admin_all      | ALL    | {app_admin}
+ projects  | projects_manager_read   | SELECT | {app_manager}
+ projects  | projects_manager_write  | ALL    | {app_manager}
+ projects  | projects_user_read      | SELECT | {app_user}
+ tasks     | tasks_admin_all         | ALL    | {app_admin}
+ tasks     | tasks_delete_managed    | DELETE | {app_manager}
+ tasks     | tasks_delete_own        | DELETE | {app_user}
+ tasks     | tasks_insert_managed    | INSERT | {app_manager}
+ tasks     | tasks_insert_own        | INSERT | {app_user}
+ tasks     | tasks_select_managed    | SELECT | {app_manager}
+ tasks     | tasks_select_own        | SELECT | {app_user}
+ tasks     | tasks_update_managed    | UPDATE | {app_manager}
+ tasks     | tasks_update_own        | UPDATE | {app_user}
+ users     | users_admin_all         | ALL    | {app_admin}
+ users     | users_department_read   | SELECT | {app_manager}
+ users     | users_self_read         | SELECT | {app_user}
+ users     | users_self_update       | UPDATE | {app_user}
+(26 rows)
+
+=== 3. RLS-функции схемы app ===
+    routine_name     | routine_type | data_type | security_type 
+---------------------+--------------+-----------+---------------
+ get_current_user_id | FUNCTION     | integer   | INVOKER
+ get_dept_for        | FUNCTION     | integer   | DEFINER
+ get_uid_for         | FUNCTION     | integer   | DEFINER
+ is_pm_for           | FUNCTION     | boolean   | DEFINER
+ is_project_manager  | FUNCTION     | boolean   | INVOKER
+(5 rows)
+
+=== 4. Матрица видимости: роль × таблица ===
+psql:/tmp/11.sql:35: NOTICE:  === Роль: dev_alice ===
+psql:/tmp/11.sql:35: NOTICE:    tasks: 1 строк
+psql:/tmp/11.sql:35: NOTICE:    comments: 8 строк
+psql:/tmp/11.sql:35: NOTICE:    projects: 4 строк
+psql:/tmp/11.sql:35: NOTICE:    users: 1 строк
+psql:/tmp/11.sql:35: NOTICE:  === Роль: pm_bob ===
+psql:/tmp/11.sql:35: NOTICE:    tasks: 4 строк
+psql:/tmp/11.sql:35: NOTICE:    comments: 10 строк
+psql:/tmp/11.sql:35: NOTICE:    projects: 4 строк
+psql:/tmp/11.sql:35: NOTICE:    users: 3 строк
+psql:/tmp/11.sql:35: NOTICE:  === Роль: admin_diana ===
+psql:/tmp/11.sql:35: NOTICE:    tasks: 11 строк
+psql:/tmp/11.sql:35: NOTICE:    comments: 10 строк
+psql:/tmp/11.sql:35: NOTICE:    projects: 5 строк
+psql:/tmp/11.sql:35: NOTICE:    users: 5 строк
+DO
+=== 5. Total строк (под postgres) ===
+    t     | count 
+----------+-------
+ tasks    |    11
+ comments |    10
+ projects |     5
+ users    |     5
+(4 rows)
+

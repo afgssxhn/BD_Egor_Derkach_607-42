@@ -1,0 +1,16 @@
+CREATE SCHEMA
+DROP TABLE
+psql:/tmp/01.sql:6: NOTICE:  table "tasks" does not exist, skipping
+DROP TABLE
+psql:/tmp/01.sql:7: NOTICE:  table "users" does not exist, skipping
+CREATE TABLE
+CREATE TABLE
+INSERT 0 3
+INSERT 0 4
+=== Проверка ===
+   t   | count 
+-------+-------
+ users |     3
+ tasks |     4
+(2 rows)
+

@@ -1,0 +1,50 @@
+SET
+ current_user | my_id 
+--------------+-------
+ pm_bob       |     2
+(1 row)
+
+=== Тест 1: задачи — свои + задачи в своих проектах ===
+ task_id |        title        | project_id | assignee_id 
+---------+---------------------+------------+-------------
+       1 | Design homepage     |          1 |           2
+       3 | Setup CI/CD         |          1 |           2
+       6 | Architecture design |          2 |           2
+       8 | Auth module         |          2 |           2
+(4 rows)
+
+=== Тест 2: внутренние комменты видны ===
+ comment_id | task_id | is_internal |            content             
+------------+---------+-------------+--------------------------------
+          1 |       1 | t           | Please make sure the design is
+          2 |       1 | t           | Working on it, will share mock
+          4 |       6 | t           | Need clarification on database
+          5 |       9 | t           | Hold the launch until legal re
+(4 rows)
+
+=== Тест 3: INSERT задачи (для проекта, в котором pm_bob owner — должно сработать) ===
+ project_id |          name           | owner_id 
+------------+-------------------------+----------
+          1 | Website Redesign        |        1
+          2 | Mobile App              |        1
+          4 | Test Project by pm_bob  |        1
+          5 | Manager Test Project P5 |        1
+(4 rows)
+
+=== Тест 4: SELECT users — свой отдел ===
+ user_id |  username   | department_id 
+---------+-------------+---------------
+       1 | dev_alice   |             1
+       2 | pm_bob      |             1
+       3 | dev_charlie |             1
+(3 rows)
+
+=== Тест 5: INSERT внутреннего коммента (успех — manager может) ===
+ comment_id | is_internal 
+------------+-------------
+         23 | t
+(1 row)
+
+INSERT 0 1
+RESET
+DELETE 1

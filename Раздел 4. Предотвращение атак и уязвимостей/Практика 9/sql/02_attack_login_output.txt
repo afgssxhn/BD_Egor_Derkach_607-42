@@ -1,0 +1,14 @@
+=== Нормальный логин (alice/alice123) ===
+ user_id | username | role_name 
+---------+----------+-----------
+       1 | alice    | employee
+(1 row)
+
+=== Атака: ввод username = ' OR 1=1 --, password = (любой) ===
+ user_id | username | role_name 
+---------+----------+-----------
+       1 | alice    | employee
+       2 | bob      | manager
+       3 | carol    | admin
+(3 rows)
+

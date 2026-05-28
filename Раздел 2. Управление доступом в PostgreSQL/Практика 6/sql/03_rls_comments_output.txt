@@ -1,0 +1,37 @@
+ALTER TABLE
+DROP POLICY
+psql:/tmp/03_rls_comments.sql:4: NOTICE:  policy "comments_user_read" for relation "app.comments" does not exist, skipping
+psql:/tmp/03_rls_comments.sql:5: NOTICE:  policy "comments_user_insert" for relation "app.comments" does not exist, skipping
+psql:/tmp/03_rls_comments.sql:6: NOTICE:  policy "comments_user_update" for relation "app.comments" does not exist, skipping
+psql:/tmp/03_rls_comments.sql:7: NOTICE:  policy "comments_user_delete" for relation "app.comments" does not exist, skipping
+DROP POLICY
+DROP POLICY
+DROP POLICY
+DROP POLICY
+DROP POLICY
+DROP POLICY
+DROP POLICY
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+=== Политики app.comments ===
+       policyname        |  cmd   |     roles     
+-------------------------+--------+---------------
+ comments_admin_all      | ALL    | {app_admin}
+ comments_manager_delete | DELETE | {app_manager}
+ comments_manager_insert | INSERT | {app_manager}
+ comments_manager_read   | SELECT | {app_manager}
+ comments_manager_update | UPDATE | {app_manager}
+ comments_user_delete    | DELETE | {app_user}
+ comments_user_insert    | INSERT | {app_user}
+ comments_user_read      | SELECT | {app_user}
+ comments_user_update    | UPDATE | {app_user}
+(9 rows)
+

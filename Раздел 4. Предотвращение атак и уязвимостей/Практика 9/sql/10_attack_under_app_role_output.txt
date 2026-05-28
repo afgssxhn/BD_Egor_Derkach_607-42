@@ -1,0 +1,43 @@
+SET
+ current_user | session_user 
+--------------+--------------
+ web_app_demo | postgres
+(1 row)
+
+=== SELECT работает (web_app_demo имеет SELECT) ===
+ count 
+-------
+     4
+(1 row)
+
+=== Атака: тот же DROP TABLE через ORDER BY injection ===
+BEGIN
+ task_id |          title          | priority |         created_at         
+---------+-------------------------+----------+----------------------------
+       4 | Закрыть инцидент        | high     | 2026-05-27 23:53:35.845011
+       3 | Обновить регламент      | medium   | 2026-05-27 23:53:35.845011
+       1 | Подготовить отчёт       | high     | 2026-05-27 23:53:35.845011
+       2 | Проверить права доступа | critical | 2026-05-27 23:53:35.845011
+(4 rows)
+
+=== Состояние внутри транзакции ===
+psql:/tmp/10.sql:13: ERROR:  must be owner of table tasks
+psql:/tmp/10.sql:16: ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+=== Проверка: даже без ROLLBACK таблица была бы цела ===
+ count 
+-------
+     4
+(1 row)
+
+=== Доп: попытка прямого вмешательства — INSERT (нет права) ===
+psql:/tmp/10.sql:25: ERROR:  permission denied for table users
+=== Доп: TRUNCATE (нет права) ===
+psql:/tmp/10.sql:28: ERROR:  permission denied for table tasks
+=== Доп: UPDATE другой колонки кроме status (запрещено) ===
+psql:/tmp/10.sql:31: ERROR:  permission denied for table tasks
+=== Доп: UPDATE status (разрешено колоночным GRANT) ===
+UPDATE 1
+RESET
+=== Откатим status обратно для чистоты стенда ===
+UPDATE 1

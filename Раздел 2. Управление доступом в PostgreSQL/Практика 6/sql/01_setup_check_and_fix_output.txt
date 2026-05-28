@@ -1,0 +1,75 @@
+=== Структура схемы app ===
+  tablename   
+--------------
+ access_logs
+ comments
+ departments
+ positions
+ projects
+ task_history
+ tasks
+ users
+(8 rows)
+
+=== COUNT по таблицам ===
+      t       | count 
+--------------+-------
+ departments  |     3
+ positions    |     5
+ users        |     5
+ projects     |     5
+ tasks        |    11
+ comments     |    10
+ task_history |     4
+ access_logs  |     5
+(8 rows)
+
+=== Текущие username в app.users (ДО фикса) ===
+ user_id | username |   full_name   
+---------+----------+---------------
+       1 | alice    | Alice Johnson
+       2 | bob      | Bob Smith
+       3 | charlie  | Charlie Brown
+       4 | diana    | Diana Prince
+       5 | eve      | Eve Wilson
+(5 rows)
+
+=== ФИКС: переименование username → имена PG-ролей ===
+UPDATE 1
+UPDATE 1
+UPDATE 1
+UPDATE 1
+UPDATE 1
+=== После фикса ===
+ user_id |   username    |   full_name   
+---------+---------------+---------------
+       1 | dev_alice     | Alice Johnson
+       2 | pm_bob        | Bob Smith
+       3 | dev_charlie   | Charlie Brown
+       4 | admin_diana   | Diana Prince
+       5 | marketing_eve | Eve Wilson
+(5 rows)
+
+=== Проверка задач: assignee_id заполнены? ===
+ task_id |          title          |   status    |  assignee   |      project       
+---------+-------------------------+-------------+-------------+--------------------
+       1 | Design homepage         | in_progress | pm_bob      | Website Redesign
+       2 | Implement navigation    | in_progress | dev_charlie | Website Redesign
+       3 | Setup CI/CD             | todo        | pm_bob      | Website Redesign
+       4 | Write E2E tests         | todo        | dev_charlie | Website Redesign
+       5 | Requirements analysis   | done        | dev_alice   | Mobile App
+       6 | Architecture design     | in_progress | pm_bob      | Mobile App
+       7 | Setup project structure | todo        | dev_charlie | Mobile App
+       8 | Auth module             | todo        | pm_bob      | Mobile App
+       9 | Create content plan     | in_progress | admin_diana | Marketing Campaign
+      10 | Design banners          | todo        | admin_diana | Marketing Campaign
+      11 | Launch email campaign   | todo        | admin_diana | Marketing Campaign
+(11 rows)
+
+=== Прямые
+psql:/tmp/01.sql:39: error: unterminated quoted string
+   grantee   | direct_grants 
+-------------+---------------
+ app_manager |             1
+(1 row)
+

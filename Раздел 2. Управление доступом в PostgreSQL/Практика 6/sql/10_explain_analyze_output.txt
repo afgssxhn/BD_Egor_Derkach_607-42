@@ -1,0 +1,71 @@
+=== Существующие индексы на app.tasks ===
+      indexname       
+----------------------
+ tasks_pkey
+ idx_tasks_project
+ idx_tasks_assignee
+ idx_tasks_created_by
+ idx_tasks_status
+(5 rows)
+
+=== План dev_alice ДО индекса (если уже есть idx_tasks_assignee — план уже Index Scan) ===
+SET
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_tasks_assignee on tasks  (cost=0.40..8.42 rows=1 width=576) (actual time=0.035..0.036 rows=1 loops=1)
+   Index Cond: (assignee_id = app.get_uid_for((CURRENT_USER)::text))
+   Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=430
+ Planning Time: 0.768 ms
+ Execution Time: 0.097 ms
+(7 rows)
+
+RESET
+=== План admin_diana — Seq Scan без RLS-фильтра (USING true) ===
+SET
+                                             QUERY PLAN                                              
+-----------------------------------------------------------------------------------------------------
+ Seq Scan on tasks  (cost=0.00..11.30 rows=130 width=576) (actual time=0.003..0.004 rows=11 loops=1)
+   Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=3
+ Planning Time: 0.145 ms
+ Execution Time: 0.010 ms
+(6 rows)
+
+RESET
+=== Снос индекса для демо ДО→ПОСЛЕ, потом восстановим ===
+DROP INDEX
+=== План dev_alice БЕЗ индекса ===
+SET
+                                            QUERY PLAN                                            
+--------------------------------------------------------------------------------------------------
+ Seq Scan on tasks  (cost=0.00..44.77 rows=1 width=576) (actual time=0.042..0.062 rows=1 loops=1)
+   Filter: (assignee_id = app.get_uid_for((CURRENT_USER)::text))
+   Rows Removed by Filter: 10
+   Buffers: shared hit=12
+ Planning:
+   Buffers: shared hit=7
+ Planning Time: 0.200 ms
+ Execution Time: 0.067 ms
+(8 rows)
+
+RESET
+=== Создаём индекс ===
+CREATE INDEX
+=== План dev_alice С индексом ===
+SET
+                                           QUERY PLAN                                            
+-------------------------------------------------------------------------------------------------
+ Seq Scan on tasks  (cost=0.00..3.94 rows=1 width=576) (actual time=0.033..0.053 rows=1 loops=1)
+   Filter: (assignee_id = app.get_uid_for((CURRENT_USER)::text))
+   Rows Removed by Filter: 10
+   Buffers: shared hit=12
+ Planning:
+   Buffers: shared hit=17 read=1
+ Planning Time: 0.273 ms
+ Execution Time: 0.058 ms
+(8 rows)
+
+RESET

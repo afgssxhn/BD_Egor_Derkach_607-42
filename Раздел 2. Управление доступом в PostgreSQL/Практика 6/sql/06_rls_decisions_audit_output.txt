@@ -1,0 +1,12 @@
+ schemaname |  tablename   | rls_enabled 
+------------+--------------+-------------
+ app        | access_logs  | f
+ app        | comments     | t
+ app        | departments  | f
+ app        | positions    | f
+ app        | projects     | t
+ app        | task_history | f
+ app        | tasks        | t
+ app        | users        | t
+(8 rows)
+
